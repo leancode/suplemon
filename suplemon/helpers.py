@@ -69,10 +69,13 @@ def leading_whitespace(line):
 
 
 def parse_path(path):
-    """Parse a relative path and return full directory and filename as a tuple."""
-    if path[:2] == "~" + os.sep:
-        p = os.path.expanduser("~")
-        path = os.path.join(p+os.sep, path[2:])
+    """Parse a relative path and return full directory and filename as a tuple.
+
+    expanduser handles a bare "~" as well as "~/...", which the previous
+    manual prefix check did not: "~" on its own was treated as a filename
+    in the current directory.
+    """
+    path = os.path.expanduser(path)
     ab = os.path.abspath(path)
     parts = os.path.split(ab)
     return parts
