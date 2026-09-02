@@ -22,7 +22,7 @@ __version__ = "0.2.1"
 
 
 class App:
-    def __init__(self, filenames=None, config_file=None):
+    def __init__(self, filenames=None, config_file=None, log_level=None):
         """
         Handle App initialization
 
@@ -33,6 +33,7 @@ class App:
         self.inited = False
         self.running = False
         self.debug = True
+        self.log_level = log_level
         self.block_rendering = False
 
         # Set default variables
@@ -99,6 +100,8 @@ class App:
         # Configure logger
         self.debug = self.config["app"]["debug"]
         debug_level = self.config["app"]["debug_level"]
+        if self.log_level is not None:
+            debug_level = self.log_level
         self.logger.debug("Setting debug_level to {0}.".format(debug_level))
         self.logger.setLevel(debug_level)
         [handler.setLevel(debug_level) for handler in self.logger.handlers]
@@ -666,7 +669,12 @@ class App:
         if target_dir and not os.path.exists(target_dir):
             if self.ui.query_bool("The path doesn't exist, do you want to create it?"):
                 self.logger.debug("Creating missing folders in save path.")
-                os.makedirs(target_dir)
+                try:
+                    os.makedirs(target_dir)
+                except OSError:
+                    self.logger.exception("Couldn't create directories!")
+                    self.ui.set_status("Couldn't create directories!")
+                    return False
             else:
                 return False
         f.set_path(full_path)

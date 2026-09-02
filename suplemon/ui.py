@@ -93,11 +93,12 @@ class InputEvent:
 
     def __str__(self):
         parts = [
-            str(self.type),
-            str(self.key_name),
-            str(self.key_code),
-            str(self.mouse_code),
-            str(self.mouse_pos)
+            "type=" + str(self.type),
+            "key_name=" + str(self.key_name),
+            "key_code=" + str(self.key_code),
+            "curses_key_name=" + str(self.curses_key_name),
+            "mouse_code=" + str(self.mouse_code),
+            "mouse_pos=" + str(self.mouse_pos),
         ]
         return " ".join(parts)
 
@@ -120,7 +121,7 @@ class UI:
         global curses
         # Set ESC detection time
         os.environ["ESCDELAY"] = str(self.app.config["app"]["escdelay"])
-        termenv = os.environ["TERM"]
+        termenv = os.environ.get("TERM", "")
         if termenv.endswith("-256color") and self.app.config["app"].get("imitate_256color"):
             # Curses doesn't recognize 'screen-256color' or 'tmux-256color' as 256-color terminals.
             # These terminals all seem to be identical to xterm-256color, which is recognized.

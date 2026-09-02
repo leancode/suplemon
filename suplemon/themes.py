@@ -46,6 +46,9 @@ scope_to_pair = {
     "markup.changed": 50,
     "constant.numeric.line-number.find-in-files - match": 51,
     "entity.name.filename.find-in-files": 52,
+    "keyword.control": 53,
+    "entity.name.type": 54,
+    "string.interpolated": 55,
 }
 
 
