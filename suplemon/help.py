@@ -120,7 +120,9 @@ the complete reference.
    > Toggle line numbers
 
  * F10
-   > Toggle visible line endings
+   > Toggle visible line endings. What gets drawn is the "line_end_char"
+   > setting, which is empty by default, so set it to something like "~"
+   > in your config before this key shows anything.
 
  * F11
    > Toggle syntax highlighting. Bound but not implemented yet, so pressing
