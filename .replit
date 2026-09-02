@@ -1,2 +1,0 @@
-# "python" is not guaranteed to exist and is Python 2 where it does.
-run = "pip install --quiet wcwidth pygments && python3 suplemon.py"
