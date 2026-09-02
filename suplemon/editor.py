@@ -362,7 +362,7 @@ class Editor(Viewer):
             self.lines[cursor.y].set_data(start)
             wspace = ""
             if self.config["auto_indent_newline"]:
-                wspace = helpers.whitespace(self.lines[cursor.y])*" "
+                wspace = helpers.leading_whitespace(self.lines[cursor.y])
             self.lines.insert(cursor.y+1, Line(wspace+end))
             self.move_y_cursors(cursor.y, 1)
             cursor.set_x(len(wspace))

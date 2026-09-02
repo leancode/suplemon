@@ -45,13 +45,27 @@ def get_string_between(start, stop, s):
 
 
 def whitespace(line):
-    """Return index of first non whitespace character on a line."""
+    """Return index of first non whitespace character on a line.
+
+    Tabs count as whitespace. Only spaces used to, which meant tab indented
+    files behaved as though they had no indentation at all.
+    """
     i = 0
-    for char in line:
-        if char != " ":
+    for char in str(line):
+        if char not in " \t":
             break
         i += 1
     return i
+
+
+def leading_whitespace(line):
+    """Return the indentation of a line, as written.
+
+    Use this instead of whitespace() when the indentation is going to be
+    reproduced, so that tabs stay tabs and spaces stay spaces.
+    """
+    line = str(line)
+    return line[:whitespace(line)]
 
 
 def parse_path(path):
