@@ -1,2 +1,4 @@
-flake8>=3.0.0,<=3.1.1
-flake8-quotes>=0.1.1,<1.0.0
+# The previous pins (flake8<=3.1.1) can no longer run on current Python: that
+# flake8 imports pkg_resources, which recent setuptools no longer ships.
+flake8>=7.0.0
+flake8-quotes>=3.4.0

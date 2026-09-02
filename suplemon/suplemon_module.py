@@ -22,7 +22,7 @@ class Storage:
         if not os.path.exists(self.storage_dir):
             try:
                 os.makedirs(self.storage_dir)
-            except:
+            except OSError:
                 self.module.app.logger.warning(
                   "Module storage folder '{0}' doesn't exist and couldn't be created.".format(
                                                self.storage_dir))
@@ -76,7 +76,7 @@ class Storage:
             f = open(self.get_path(), "w")
             f.write(data)
             f.close()
-        except:
+        except (OSError, TypeError, ValueError):
             self.module.logger.exception("Storing module storage failed.")
 
     def load(self):
@@ -86,7 +86,7 @@ class Storage:
                 f = open(self.get_path())
                 data = f.read()
                 f.close()
-            except:
+            except OSError:
                 self.module.logger.debug("Loading module storage failed.")
                 return False
         else:
@@ -95,7 +95,7 @@ class Storage:
         try:
             self.data = json.loads(data)
             return True
-        except:
+        except ValueError:
             self.module.logger.exception("Parsing module storage failed.")
         return False
 

@@ -20,7 +20,7 @@ class Eval(Module):
     def evaluate_input(self, inp):
         try:
             value = eval(inp)
-        except:
+        except Exception:
             self.app.set_status("Eval failed.")
             return False
         self.app.set_status("Result:{0}".format(value))
@@ -32,7 +32,7 @@ class Eval(Module):
             line = editor.get_line(num)
             try:
                 value = eval(line.get_data())
-            except:
+            except Exception:
                 continue
             line.set_data(str(value))
 

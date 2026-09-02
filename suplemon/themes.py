@@ -7,7 +7,7 @@ import logging
 
 try:
     import xml.etree.cElementTree as ET
-except:
+except ImportError:
     import xml.etree.ElementTree as ET
 
 from . import hex2xterm
@@ -77,7 +77,7 @@ class ThemeLoader:
         self.logger.debug("Loading theme '{0}'.".format(name))
         try:
             tree = ET.parse(fullpath)
-        except:
+        except (OSError, ET.ParseError):
             self.logger.error("Couldn't parse theme '{}'. Falling back to line based highlighting.".format(name))
             return None
         root = tree.getroot()
@@ -94,7 +94,7 @@ class ThemeLoader:
 
         try:
             settings = config["settings"]
-        except:
+        except KeyError:
             return None
         self.set_theme(theme, settings)
 
@@ -104,7 +104,7 @@ class ThemeLoader:
         theme = None
         try:
             theme = self.themes[name]
-        except:
+        except KeyError:
             theme = self.load(name)
             self.themes[name] = theme
         if theme is None:
@@ -192,7 +192,7 @@ class ThemeLoader:
         try:
             xterm_color = int(hex2xterm.hex_to_xterm(hex_color))
             return xterm_color
-        except:
+        except (TypeError, ValueError):
             self.logger.exception("Failed to convert color: {}".format(text))
 
         return False

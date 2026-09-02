@@ -60,13 +60,13 @@ class Battery(Module):
         try:
             path_info = self.readf("/proc/acpi/battery/BAT0/info")
             path_state = self.readf("/proc/acpi/battery/BAT0/state")
-        except:
+        except OSError:
             return None
         try:
             max_cap = float(helpers.get_string_between("last full capacity:", "mWh", path_info))
             cur_cap = float(helpers.get_string_between("remaining capacity:", "mWh", path_state))
             return int(cur_cap / max_cap * 100)
-        except:
+        except (TypeError, ValueError):
             return None
 
     def battery_status_acpi(self):
@@ -75,14 +75,14 @@ class Battery(Module):
             fnull = open(os.devnull, "w")
             raw_str = subprocess.check_output(["acpi"], stderr=fnull)
             fnull.close()
-        except:
+        except (OSError, subprocess.CalledProcessError):
             return None
         raw_str = raw_str.decode("utf-8")
         part = helpers.get_string_between(",", "%", raw_str)
         if part:
             try:
                 return int(part)
-            except:
+            except ValueError:
                 return None
         return None
 
@@ -91,7 +91,7 @@ class Battery(Module):
         path = "/org/freedesktop/UPower/devices/battery_BAT0"
         try:
             raw_str = subprocess.check_output(["upower", "-i", path])
-        except:
+        except (OSError, subprocess.CalledProcessError):
             return None
         raw_str = raw_str.decode("utf-8")
         raw_str = raw_str.splitlines()[0]
@@ -99,7 +99,7 @@ class Battery(Module):
         if part:
             try:
                 return int(part)
-            except:
+            except ValueError:
                 return None
         return None
 

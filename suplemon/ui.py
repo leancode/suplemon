@@ -69,7 +69,7 @@ class InputEvent:
 
             try:
                 char = chr(key_code)
-            except:
+            except (TypeError, ValueError):
                 pass
             if char is not None:
                 self.is_typeable = True
@@ -87,7 +87,7 @@ class InputEvent:
             try:  # Try to convert to a curses key name
                 name = str(curses.keyname(key).decode("utf-8"))
                 return name
-            except:  # Otherwise try to convert to a character
+            except (curses.error, OverflowError, ValueError):  # Otherwise try to convert to a character
                 return False
         return False
 
@@ -134,7 +134,7 @@ class UI:
         # Notify user if Pygments syntax highlighting isn't available
         try:
             import pygments  # noqa
-        except:
+        except ImportError:
             self.logger.info("Pygments not available, please install python3-pygments for proper syntax highlighting.")
 
     def run(self, func):
@@ -157,7 +157,7 @@ class UI:
             # Hide the default cursor
             # Might fail on vt100 terminal emulators
             curses.curs_set(0)
-        except:
+        except curses.error:
             self.logger.warning("curses.curs_set(0) failed!")
 
         if "get_wch" not in dir(self.screen):
@@ -190,7 +190,7 @@ class UI:
         curses.start_color()
         try:
             curses.use_default_colors()
-        except:
+        except curses.error:
             self.logger.warning("Failed to load curses default colors. You could try 'export TERM=xterm-256color'.")
             return False
 
@@ -219,12 +219,12 @@ class UI:
         try:
             curses.init_pair(9, 8, bg)                   # Gray (Whitespace color)
             self.limited_colors = False
-        except:
+        except curses.error:
             # Try to revert the color
             self.limited_colors = True
             try:
                 curses.init_pair(9, fg, bg)              # Try to revert color if possible
-            except:
+            except curses.error:
                 # Reverting failed
                 self.logger.error("Failed to set and revert extra colors.")
 
@@ -249,7 +249,7 @@ class UI:
                 curses.init_pair(7, 15, bg)   # 7 White
                 curses.init_pair(8, self.get_line_number_color(), bg)  # 8 Line number color
                 curses.init_pair(9, 8, bg)   # 8 Gray (Whitespace color)
-            except:
+            except curses.error:
                 self.logger.warning("Enhanced colors failed to load. You could try 'export TERM=xterm-256color'.")
                 self.app.config["editor"]["theme"] = "8colors"
         else:
@@ -467,7 +467,7 @@ class UI:
         # Thanks curses!
         try:
             self.status_win.addstr(0, 0, line, attrs)
-        except:
+        except curses.error:
             self.logger.exception("Failed to show bottom status bar. Status line was: {0}".format(line))
 
         self.status_win.refresh()
@@ -604,7 +604,7 @@ class UI:
             # Handle KeyboardInterrupt as Ctrl+C
             event.set_key_name("ctrl+c")
             return event
-        except:
+        except curses.error:
             # No input available
             return False
         finally:
@@ -629,7 +629,7 @@ class UI:
         """Get the mouse event data."""
         try:
             mouse_state = curses.getmouse()
-        except:
+        except curses.error:
             self.logger.error("curses.getmouse() failed!", exc_info=True)
             return False
 

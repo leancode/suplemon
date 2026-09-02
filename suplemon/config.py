@@ -233,7 +233,7 @@ class Config:
             data = self.remove_config_comments(data)
             config = json.loads(data)
             return config
-        except:
+        except (OSError, ValueError):
             return False
 
     def remove_config_comments(self, data):
@@ -257,7 +257,7 @@ class Config:
         if not os.path.exists(self.config_dir):
             try:
                 os.makedirs(self.config_dir)
-            except:
+            except OSError:
                 self.app.logger.warning("Config folder '{0}' doesn't exist and couldn't be created.".format(
                                         self.config_dir))
 

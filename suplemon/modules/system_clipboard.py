@@ -50,7 +50,7 @@ class SystemClipboard(Module):
                 return False
             data = subprocess.check_output(command, universal_newlines=True)
             return data
-        except:
+        except (OSError, subprocess.CalledProcessError):
             return False
 
     def set_clipboard(self, data):
@@ -66,7 +66,7 @@ class SystemClipboard(Module):
             p = subprocess.Popen(command, stdin=subprocess.PIPE)
             out, err = p.communicate(input=bytes(data, "utf-8"))
             return out
-        except:
+        except (OSError, subprocess.CalledProcessError):
             return False
 
     def has_pb_support(self):

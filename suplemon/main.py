@@ -488,7 +488,7 @@ class App:
         try:
             self.modules.modules[module_name].run(self, self.get_editor(), args)
             return True
-        except:
+        except Exception:
             # Catch any error when running a module just incase
             self.set_status("Running command failed!")
             self.logger.exception("Running command failed!")
@@ -526,7 +526,7 @@ class App:
             for cb in callbacks:
                 try:
                     val = cb(event)
-                except:
+                except Exception:
                     # Catch all errors in callbacks just incase
                     self.logger.error("Failed running callback: {0}".format(cb), exc_info=True)
                     continue

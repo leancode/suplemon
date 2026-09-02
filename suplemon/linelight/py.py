@@ -20,7 +20,7 @@ class Syntax:
             color = color_map["red"]
         elif line.startswith("self."):
             color = color_map["cyan"]
-        elif line.startswith(("#", "//", "\"", "'", ":")):
+        elif line.startswith(("#", "//", '"', "'", ":")):
             color = color_map["magenta"]
         elif line.startswith(keywords):
             color = color_map["yellow"]

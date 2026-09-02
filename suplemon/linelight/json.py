@@ -10,6 +10,6 @@ class Syntax:
         line = raw_line.strip()
         if line.startswith(("{", "}")):
             color = color_map["yellow"]
-        elif line.startswith("\""):
+        elif line.startswith('"'):
             color = color_map["green"]
         return color
