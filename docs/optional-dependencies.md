@@ -21,15 +21,6 @@ does not understand context.
 
 More information: https://pygments.org/
 
-## pycryptodome
-
-Used by the `crypt` module, which encrypts and decrypts the editor buffer.
-Without it that one module is skipped at startup and everything else works.
-
-    pip install pycryptodome
-
-More information: https://pycryptodome.readthedocs.io/
-
 ## A clipboard tool
 
 Lets copy and paste share text with other applications. Without one, copy and
