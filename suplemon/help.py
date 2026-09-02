@@ -8,8 +8,9 @@ help_text = """
 *Contents*
 1. General description
 2. User interface
-3. Default keyboard shortcuts
-4. Commands
+3. Selecting text
+4. Default keyboard shortcuts
+5. Commands
 
 ## 1. General description
 Suplemon is designed to be an easy, intuitive and powerful text editor.
@@ -24,7 +25,50 @@ shows the program version, a clock, and a list of opened files. The bottom bar
 shows status messages and handles input for commands. Above the bottom status
 bar there is a list of most common keyboard shortcuts.
 
-## 3. Default keyboard shortcuts
+## 3. Selecting text
+Suplemon has no text selection. There is no way to select a range of
+characters, with or without a mouse, and nothing highlights as you move.
+What it has instead is cursors, and the unit of work is the whole line.
+
+Copy (Ctrl + C) and cut (Ctrl + X) act on every line that has a cursor on
+it. Where the cursor sits within the line makes no difference: one cursor
+anywhere on a line copies that entire line. So "selecting" more text means
+putting more cursors down.
+
+ * Alt + Down / Up
+   > Add a cursor on the next or previous line. This is the usual way to
+   > take several lines: press Alt + Down twice, then Ctrl + C, to copy
+   > three lines.
+
+ * Ctrl + D
+   > Add a cursor at the next occurance of the word the cursor is on.
+   > Press it repeatedly to gather up matches one at a time.
+
+ * Ctrl + A
+   > Add a cursor at every occurance of the last search term at once.
+   > Search with Ctrl + F or Ctrl + D first to set the term.
+
+ * ESC
+   > Collapse back to a single cursor when you're done.
+
+Pasting (Ctrl + V) behaves in one of two ways. With a single cursor and
+several copied lines, the lines are inserted as new lines. With several
+cursors, or a single copied line, the text is inserted at each cursor
+position instead, and a single copied line is repeated into every cursor.
+That last case is what makes multi cursor editing useful: copy one line,
+put ten cursors down, and paste it into all ten at once.
+
+The practical consequence is that you cannot copy part of a line. If you
+need a fragment, copy the whole line and trim what you don't want after
+pasting it. This is the habit that takes the longest to unlearn if you're
+coming from an editor with ordinary selection.
+
+Copy and paste share text with other applications when a clipboard tool
+such as xsel, xclip, wl-clipboard or pbcopy is installed. Without one they
+still work, but only within Suplemon.
+
+
+## 4. Default keyboard shortcuts
 The default keyboard shortcuts imitate those of common graphical editors.
 Most shortcuts are also shown at the bottom in the legend area. Here's
 the complete reference.
@@ -155,7 +199,7 @@ the complete reference.
    > Scroll up & down.
 
 
-## 4. Commands
+## 5. Commands
 Commands are special operations that can be performed (e.g. remove whitespace
 or convert line to uppercase). Each command can be run by pressing Ctrl + E
 and then typing the command name. Commands are extensions and are stored in
