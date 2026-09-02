@@ -279,6 +279,14 @@ class App:
                 return True
         return False
 
+    def unsaved_files(self):
+        """Return the files that have unsaved changes.
+
+        :return: List of files with unsaved changes.
+        :rtype: list
+        """
+        return [f for f in self.files if f.is_changed()]
+
     def reload_config(self):
         """Reload configuration."""
         self.config.reload()
@@ -386,10 +394,24 @@ class App:
         self.current_file = self.last_file_index()
         return new_file
 
+    def exit_question(self):
+        """Build the exit confirmation, naming what would be lost.
+
+        A bare "Exit?" doesn't say that unsaved work is about to be
+        discarded, which is the one thing the user needs to know.
+
+        :return: Question to put to the user.
+        :rtype: str
+        """
+        unsaved = self.unsaved_files()
+        if len(unsaved) == 1:
+            return "Discard unsaved changes to '{0}' and exit?".format(unsaved[0].get_name())
+        return "Discard unsaved changes to {0} files and exit?".format(len(unsaved))
+
     def ask_exit(self):
         """Exit if no unsaved changes, else make sure the user really wants to exit."""
         if self.unsaved_changes():
-            yes = self.ui.query_bool("Exit?")
+            yes = self.ui.query_bool(self.exit_question())
             if yes:
                 self.exit()
                 return True
