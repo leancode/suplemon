@@ -15,6 +15,19 @@ except:
 from .main import App, __version__
 
 
+def print_debug_notice(app):
+    """Explain the log that debug mode just printed, and how to turn it off.
+
+    Without this the messages look like something went wrong, when they are
+    only shown because debug mode asked for them.
+    """
+    print(
+        "\nThe messages above are Suplemon's debug log, shown because debug mode is on.\n"
+        'Set "debug": false in {0} to stop showing them.'.format(app.config.path()),
+        file=sys.stderr
+    )
+
+
 def main():
     """Handle CLI invocation"""
     # Parse our CLI arguments
@@ -40,6 +53,9 @@ def main():
     if app.debug:
         for logger_handler in app.logger.handlers:
             logger_handler.close()
+        # Only explain the log if there was actually something to show
+        if any(getattr(handler, "flushed_records", 0) for handler in app.logger.handlers):
+            print_debug_notice(app)
 
 
 if __name__ == "__main__":

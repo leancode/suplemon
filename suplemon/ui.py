@@ -228,8 +228,13 @@ class UI:
                 # Reverting failed
                 self.logger.error("Failed to set and revert extra colors.")
 
-        # Nicer shades of same colors (if supported)
-        if curses.can_change_color():
+        # Nicer shades of same colors (if the terminal has a big enough palette).
+        # These only ever call init_pair() with palette indexes, so what matters
+        # is the number of colors available, not whether the terminal can
+        # redefine them with init_color(). Checking can_change_color() here used
+        # to drop terminals that show 256 colors perfectly well (tmux-256color,
+        # screen-256color, konsole-256color, putty-256color) down to 8 colors.
+        if curses.COLORS >= 256:
             try:
                 # TODO: Define RGB for these to avoid getting
                 # different results in different terminals
@@ -248,7 +253,10 @@ class UI:
                 self.logger.warning("Enhanced colors failed to load. You could try 'export TERM=xterm-256color'.")
                 self.app.config["editor"]["theme"] = "8colors"
         else:
-            self.logger.warning("Enhanced colors not supported. You could try 'export TERM=xterm-256color'.")
+            # Not a problem, just a smaller palette, so this is only worth
+            # mentioning when debugging.
+            self.logger.debug(
+                "Terminal reports {0} colors, using the 8 color theme.".format(curses.COLORS))
             self.app.config["editor"]["theme"] = "8colors"
 
         self.app.themes.use(self.app.config["editor"]["theme"])

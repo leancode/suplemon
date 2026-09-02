@@ -17,8 +17,12 @@ class SystemClipboard(Module):
         elif self.has_xclip_support():
             self.clipboard_type = "xclip"
         else:
-            self.logger.warning(
-                "Can't use system clipboard. Install 'xsel' or 'pbcopy' or 'xclip' for system clipboard support.")
+            # No clipboard tool is normal on a headless or minimal system, and
+            # suplemon's own copy/paste works regardless, so this isn't a
+            # warning. Kept at debug level so it stays out of the way.
+            self.logger.debug(
+                "No system clipboard tool found. Install 'xsel', 'pbcopy' or 'xclip' to share the "
+                "clipboard with other applications.")
             return False
         self.bind_event_before("insert", self.insert)
         self.bind_event_after("copy", self.copy)
