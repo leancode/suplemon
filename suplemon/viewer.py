@@ -894,7 +894,7 @@ class BaseViewer:
         what = self.last_find
         if what == "":
             cursor = self.get_cursor()
-            search = "^([\w\-]+)"
+            search = r"^([\w\-]+)"
             line = self.lines[cursor.y][cursor.x:]
             matches = re.match(search, line)
             if matches:
