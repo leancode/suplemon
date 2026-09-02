@@ -30,6 +30,10 @@ Most shortcuts are also shown at the bottom in the legend area. Here's
 the complete reference.
 
 
+ * F1 / Ctrl + H
+   > Show this help. On terminals where the backspace key sends ^H, Ctrl + H
+   > arrives as backspace and can't reach the help, so F1 always works.
+
  * Ctrl + Q
    > Exit
 
@@ -79,7 +83,7 @@ the complete reference.
  * Ctrl + S
    > Save current file
 
- * F1
+ * F3
    > Save file with new name
 
  * F2
