@@ -177,7 +177,7 @@ class PyLint(BaseLint):
                 if line_no not in linting.keys():
                     linting[line_no] = []
                 linting[line_no].append((char_no, data, err_code))
-            except:
+            except (IndexError, ValueError):
                 self.logger.debug("Failed to parse line:{0}".format(line))
         return linting
 
@@ -214,7 +214,7 @@ class JsLint(BaseLint):
                 if line_no not in linting.keys():
                     linting[line_no] = []
                 linting[line_no].append((char_no, data, err_code))
-            except:
+            except (IndexError, ValueError):
                 self.logger.debug("Failed to parse line:{0}".format(line))
         return linting
 
@@ -263,7 +263,7 @@ class PhpLint(BaseLint):
                 if line_no not in linting.keys():
                     linting[line_no] = []
                 linting[line_no].append((char_no, data, err_code))
-            except:
+            except (IndexError, ValueError):
                 self.logger.debug("Failed to parse line:{0}".format(line))
         return linting
 

@@ -282,7 +282,7 @@ class BaseViewer:
         # crash with incorrect coordinates
         try:
             self.window.mvwin(yx[0], yx[1])
-        except:
+        except curses.error:
             self.logger.warning("Moving window failed!", exc_info=True)
 
     def refresh(self):
@@ -333,7 +333,7 @@ class BaseViewer:
             pos = (x_offset, i)
             try:
                 self.render_line_contents(line, pos, x_offset, max_len)
-            except:
+            except Exception:
                 self.logger.error("Failed rendering line #{0} @{1} DATA:'{2}'!".format(lnum+1, pos, line),
                                   exc_info=True)
             if attribs is not None:
@@ -611,7 +611,7 @@ class BaseViewer:
         """Remove a cursor object from the cursor list."""
         try:
             index = self.cursors.index(cursor)
-        except:
+        except ValueError:
             return False
         self.cursors.pop(index)
         return True
@@ -849,7 +849,7 @@ class BaseViewer:
             if self.config["regex_find"]:
                 try:  # Try to search with the actual regex
                     indices = [match.start() for match in re.finditer(what, s)]
-                except:  # Revert to normal search
+                except re.error:  # Revert to normal search
                     indices = [match.start() for match in re.finditer(pattern, s)]
             else:
                 # Use normal search
@@ -946,7 +946,7 @@ class Viewer(BaseViewer):
         if importlib and os.path.isfile(path):
             try:
                 module = importlib.import_module(syntax_module_name, "suplemon.linelight")
-            except:
+            except Exception:
                 self.logger.error("Failed to load syntax file '{0}'!".format(path), exc_info=True)
         else:
             return False
@@ -976,7 +976,7 @@ class Viewer(BaseViewer):
         try:
             self.pygments_syntax = pygments.lexers.get_lexer_by_name(ext)
             self.logger.debug("Loaded Pygments lexer '{0}'.".format(ext))
-        except:
+        except Exception:
             self.logger.debug("Failed to load Pygments lexer '{0}'.".format(ext))
             return False
         if ext == "php":

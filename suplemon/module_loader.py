@@ -55,7 +55,7 @@ class ModuleLoader:
         try:
             inst = module[1]["class"](self.app, module[0], module[1])  # Store the module instance
             return inst
-        except:
+        except Exception:
             self.logger.error("Initializing module failed: {0}".format(module[0]), exc_info=True)
         return False
 
@@ -66,7 +66,7 @@ class ModuleLoader:
             spec = importlib.util.spec_from_file_location(name, path)
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
-        except:
+        except Exception:
             self.logger.error("Failed loading module: {0}".format(name), exc_info=True)
             return False
         if "module" not in dir(mod):

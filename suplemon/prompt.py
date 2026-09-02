@@ -314,7 +314,7 @@ class PromptFile(PromptAutocmp):
         # In case we don't have sufficent permissions
         try:
             contents = os.listdir(path)
-        except:
+        except OSError:
             return []
         contents.sort()
         items = []

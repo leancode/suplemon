@@ -77,7 +77,7 @@ try:
     # DEV: We use 1 backup count since it won't truncate otherwise =/
     rfh = RotatingFileHandler(log_filepath, mode="a+", maxBytes=(4 * 1024 * 1024), backupCount=1)
     logger_handlers.append(rfh)
-except:
+except OSError:
     # Can't recover and can't log this error
     pass
 

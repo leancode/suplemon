@@ -94,7 +94,7 @@ class File:
             f = open(self._path(), "w")
             f.write(data)
             f.close()
-        except:
+        except OSError:
             return False
         self.data = data
         self.last_save = time.time()
@@ -134,8 +134,8 @@ class File:
             data = f.read()
             f.close()
             return data
-        except:
-            self.logger.exception("Failed reading file \"{file}\"".format(file=file))
+        except (OSError, UnicodeDecodeError):
+            self.logger.exception('Failed reading file "{file}"'.format(file=file))
             return False
 
     def _read_binary(self, file):
@@ -152,7 +152,7 @@ class File:
                 return False
             self.logger.info("Trying to decode with encoding '{0}'".format(charenc))
             return data.decode(charenc)
-        except:
+        except Exception:
             self.logger.warning("Failed reading binary file!", exc_info=True)
         return False
 

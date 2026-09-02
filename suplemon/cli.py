@@ -8,7 +8,7 @@ import sys
 
 try:
     import argparse
-except:
+except ImportError:
     # Python < 2.7
     argparse = False
 

@@ -41,7 +41,7 @@ def encrypt(data, password, salt):
 
     iv = Random.new().read(AES.block_size)
     cipher = AES.new(key, AES.MODE_CBC, iv)
-    encoded = base64.b64encode(iv + cipher.encrypt(data)).decode('utf-8')
+    encoded = base64.b64encode(iv + cipher.encrypt(data)).decode("utf-8")
     return encoded
 
 
@@ -113,7 +113,7 @@ class Crypt(Module):
         # Run the encryption or decryption on the editor buffer
         try:
             method(editor, options)
-        except:
+        except Exception:
             app.set_status(self.actions[key] + " failed.")
 
 

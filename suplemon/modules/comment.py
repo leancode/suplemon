@@ -12,7 +12,7 @@ class Comment(Module):
         try:
             # Try to get comment start and end syntax
             comment = editor.syntax.get_comment()
-        except:
+        except AttributeError:
             return False
         line_nums = editor.get_lines_with_cursors()
         # Iterate through lines

@@ -13,7 +13,7 @@ class Hostname(Module):
         hostinfo = None
         try:
             hostinfo = socket.gethostbyaddr(socket.gethostname())
-        except:
+        except OSError:
             self.logger.debug("Failed to get hostname.")
         if hostinfo:
             self.hostname = hostinfo[0]
