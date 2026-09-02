@@ -208,11 +208,18 @@ class Config:
         return self.load()
 
     def store(self):
-        """Write current config state to file."""
-        data = json.dumps(self.config)
-        f = open(self.config_filename)
-        f.write(data)
-        f.close()
+        """Write current config state to file.
+
+        :return: True if the config was written.
+        """
+        data = json.dumps(self.config, indent=4)
+        try:
+            with open(self.path(), "w", encoding="utf-8") as f:
+                f.write(data)
+        except OSError:
+            self.logger.warning("Couldn't write config file '{0}'.".format(self.path()))
+            return False
+        return True
 
     def merge_defaults(self, config):
         """Fill any missing config options with defaults."""

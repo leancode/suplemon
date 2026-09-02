@@ -126,7 +126,7 @@ class BaseLint:
             fnull = open(os.devnull, "w")
             process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=fnull)
             fnull.close()
-        except (OSError, EnvironmentError):  # can't use FileNotFoundError in Python 2
+        except OSError:
             self.logger.debug("Subprocess failed.")
             return False
         out, err = process.communicate()
@@ -232,7 +232,7 @@ class PhpLint(BaseLint):
             fnull = open(os.devnull, "w")
             process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             fnull.close()
-        except (OSError, EnvironmentError):  # can't use FileNotFoundError in Python 2
+        except OSError:
             self.logger.debug("Subprocess failed.")
             return False
         out, err = process.communicate()

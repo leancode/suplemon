@@ -28,6 +28,24 @@ class File:
         """Get the full path of the file."""
         return os.path.join(self.fpath, self.name)
 
+    def get_encoding(self):
+        """Get the encoding to read and write this file with.
+
+        Comes from the editor's default_encoding setting. Without this the
+        files were opened with whatever the locale happened to be, so the
+        setting did nothing and a non UTF-8 locale mangled the contents.
+
+        :return: Name of the encoding to use.
+        :rtype: str
+        """
+        default = "utf-8"
+        if self.app is None:
+            return default
+        try:
+            return self.app.config["editor"]["default_encoding"] or default
+        except (KeyError, TypeError):
+            return default
+
     def path(self):
         """Get the full path of the file."""
         # TODO: deprecate in favour of get_path()
@@ -91,10 +109,10 @@ class File:
         """Write the editor data to file."""
         data = self.editor.get_data()
         try:
-            f = open(self._path(), "w")
-            f.write(data)
-            f.close()
-        except OSError:
+            with open(self._path(), "w", encoding=self.get_encoding()) as f:
+                f.write(data)
+        except (OSError, LookupError, UnicodeError):
+            self.logger.exception('Failed writing file "{file}"'.format(file=self._path()))
             return False
         self.data = data
         self.last_save = time.time()
@@ -130,11 +148,9 @@ class File:
     def _read_text(self, file):
         # Read text file
         try:
-            f = open(self._path())
-            data = f.read()
-            f.close()
-            return data
-        except (OSError, UnicodeDecodeError):
+            with open(self._path(), encoding=self.get_encoding()) as f:
+                return f.read()
+        except (OSError, LookupError, UnicodeDecodeError):
             self.logger.exception('Failed reading file "{file}"'.format(file=file))
             return False
 

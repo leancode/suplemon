@@ -1,0 +1,42 @@
+name: test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Floor is what setup.py declares; the rest are the versions still
+        # receiving fixes at the time of writing.
+        python-version: ["3.8", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          pip install pygments wcwidth
+      - name: Lint
+        run: flake8 *.py suplemon/
+      - name: Import check
+        # There are no unit tests yet, so at least prove the package imports
+        # and that every bundled module loads.
+        run: |
+          python -c "
+          import logging; logging.disable(logging.CRITICAL)
+          from suplemon.cli import main
+          from suplemon.module_loader import ModuleLoader
+          ml = ModuleLoader()
+          names = ml.get_module_names()
+          loaded = [n for n in names if ml.load_single(n)]
+          print('%d/%d modules load' % (len(loaded), len(names)))
+          assert len(loaded) == len(names), set(names) - set(loaded)
+          "

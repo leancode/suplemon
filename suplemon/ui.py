@@ -4,7 +4,6 @@ Curses user interface.
 """
 
 import os
-import sys
 import logging
 from wcwidth import wcswidth
 
@@ -62,10 +61,9 @@ class InputEvent:
             if key_code in key_map.keys():
                 return key_map[key_code]
 
-            if sys.version_info[0] >= 3:
-                if isinstance(key_code, str):
-                    self.is_typeable = True
-                    return key_code
+            if isinstance(key_code, str):
+                self.is_typeable = True
+                return key_code
 
             try:
                 char = chr(key_code)
@@ -586,7 +584,7 @@ class UI:
         result = self._query(text, initial, PromptFile)
         return result
 
-    def query_autocmp(self, text, initial="", completions=[]):
+    def query_autocmp(self, text, initial="", completions=None):
         """Get an arbitrary string from the user with autocomplete."""
         prompt_inst = PromptAutocmp(self.app, self.status_win, initial_items=completions)
         result = self._query(text, initial, inst=prompt_inst)

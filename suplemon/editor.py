@@ -125,7 +125,10 @@ class Editor(Viewer):
             state.store(self)
         if len(self.history) > 1:
             if self.current_state < len(self.history)-1:
-                self.history = self.history[:self.current_state]
+                # Drop the redo branch, but keep the state being edited from.
+                # Slicing at current_state dropped that state too, so undoing
+                # after an undo followed by an edit skipped a step.
+                self.history = self.history[:self.current_state+1]
 
         self.history.append(state)
         self.current_state = len(self.history)-1
@@ -362,7 +365,7 @@ class Editor(Viewer):
             self.lines[cursor.y].set_data(start)
             wspace = ""
             if self.config["auto_indent_newline"]:
-                wspace = helpers.whitespace(self.lines[cursor.y])*" "
+                wspace = helpers.leading_whitespace(self.lines[cursor.y])
             self.lines.insert(cursor.y+1, Line(wspace+end))
             self.move_y_cursors(cursor.y, 1)
             cursor.set_x(len(wspace))

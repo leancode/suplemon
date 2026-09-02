@@ -23,10 +23,11 @@ class Comment(Module):
             # Look for comment syntax in stripped line (TODO:Make this smarter)
             target = str(line).strip()
             w = helpers.whitespace(line)  # Amount of whitespace at line start
+            indent = helpers.leading_whitespace(line)  # That whitespace as written
             # If the line starts with comment syntax
             if target.startswith(comment[0]):
                 # Reconstruct the whitespace and add the line
-                new_line = (" "*w) + line[w+len(comment[0]):]
+                new_line = indent + line[w+len(comment[0]):]
                 # If comment end syntax exists
                 if comment[1]:
                     # Try to remove it from the end of the line
@@ -40,7 +41,7 @@ class Comment(Module):
                 # Slice out the prepended whitespace
                 new_line = line[w:]
                 # Add the whitespace and starting comment
-                new_line = (" "*w) + comment[0] + new_line
+                new_line = indent + comment[0] + new_line
                 if comment[1]:
                     # Add comment end syntax if needed
                     new_line += comment[1]

@@ -45,20 +45,37 @@ def get_string_between(start, stop, s):
 
 
 def whitespace(line):
-    """Return index of first non whitespace character on a line."""
+    """Return index of first non whitespace character on a line.
+
+    Tabs count as whitespace. Only spaces used to, which meant tab indented
+    files behaved as though they had no indentation at all.
+    """
     i = 0
-    for char in line:
-        if char != " ":
+    for char in str(line):
+        if char not in " \t":
             break
         i += 1
     return i
 
 
+def leading_whitespace(line):
+    """Return the indentation of a line, as written.
+
+    Use this instead of whitespace() when the indentation is going to be
+    reproduced, so that tabs stay tabs and spaces stay spaces.
+    """
+    line = str(line)
+    return line[:whitespace(line)]
+
+
 def parse_path(path):
-    """Parse a relative path and return full directory and filename as a tuple."""
-    if path[:2] == "~" + os.sep:
-        p = os.path.expanduser("~")
-        path = os.path.join(p+os.sep, path[2:])
+    """Parse a relative path and return full directory and filename as a tuple.
+
+    expanduser handles a bare "~" as well as "~/...", which the previous
+    manual prefix check did not: "~" on its own was treated as a filename
+    in the current directory.
+    """
+    path = os.path.expanduser(path)
     ab = os.path.abspath(path)
     parts = os.path.split(ab)
     return parts
