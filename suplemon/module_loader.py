@@ -3,8 +3,8 @@
 Addon module loader.
 """
 import os
-import imp
 import logging
+import importlib.util
 
 
 class ModuleLoader:
@@ -63,7 +63,9 @@ class ModuleLoader:
         """Load single module file."""
         path = os.path.join(self.module_path, name+".py")
         try:
-            mod = imp.load_source(name, path)
+            spec = importlib.util.spec_from_file_location(name, path)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
         except:
             self.logger.error("Failed loading module: {0}".format(name), exc_info=True)
             return False

@@ -171,7 +171,11 @@ class UI:
 
     def unload(self):
         """Unload curses."""
-        curses.endwin()
+        # Don't call curses.endwin() here. self.run() drives the app via
+        # curses.wrapper(), which always calls endwin() itself when it
+        # returns. Ending the screen twice makes modern ncurses return ERR,
+        # which Python raises as _curses.error on exit.
+        pass
 
     def setup_mouse(self):
         # Mouse support
