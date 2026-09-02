@@ -37,6 +37,10 @@ class AutoComplete(Module):
     def build_word_list(self, *args):
         """Build the word list based on contents of open files."""
         word_list = []
+        # Membership is tracked in a set. Checking "word not in word_list"
+        # scans the whole list for every word in every open file, which is
+        # what made opening a large file take minutes.
+        seen = set()
         for file in self.app.files:
             data = file.get_editor().get_data()
             words = helpers.multisplit(data, self.get_separators())
@@ -44,7 +48,8 @@ class AutoComplete(Module):
                 # Discard undesired whitespace
                 word = word.strip()
                 # Must be longer than 1 and not yet in word_list
-                if len(word) > 1 and word not in word_list:
+                if len(word) > 1 and word not in seen:
+                    seen.add(word)
                     word_list.append(word)
         self.word_list = word_list
         return False
