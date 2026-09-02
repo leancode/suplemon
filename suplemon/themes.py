@@ -158,13 +158,13 @@ class ThemeLoader:
         return d
 
     def parse_array(self, node):
-        l = []
+        values = []
         for child in node:
             value = self.parse(child)
             if value is not None:
-                l.append(value)
+                values.append(value)
 
-        return l
+        return values
 
     def parse_text(self, node):
         # If the node text is a hex color convert it to an xterm equivalent
