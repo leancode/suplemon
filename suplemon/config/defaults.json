@@ -44,8 +44,10 @@
         "max_history": 50,
         // Characters considered to separate words
         "punctuation": " (){}[]<>$@!%'\"=+-/*.:,;_\n\r",
-        // Character to use to visualize end of line
-        "line_end_char": "",
+        // Character drawn at the end of each line when line ends are shown.
+        // Line ends are hidden at startup; F10 toggles them.
+        // Default is U+21B5, a downwards arrow with tip leftwards.
+        "line_end_char": "\u21B5",
         // White space characters and their visual matches
         "white_space_map": {
             // Null byte as null symbol
