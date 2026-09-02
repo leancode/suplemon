@@ -81,6 +81,11 @@ class Config:
         path = self.keymap_path()
         keymap = []
 
+        # Reload the defaults first. self.keymap already holds the previous
+        # merge of defaults and user keymap, so appending to it again would
+        # keep bindings the user has since deleted from their keymap file.
+        self.load_default_keys()
+
         if not os.path.exists(path):
             self.logger.debug("Keymap file '{0}' doesn't exist.".format(path))
         else:
