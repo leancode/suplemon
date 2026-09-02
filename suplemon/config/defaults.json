@@ -12,8 +12,9 @@
 {
     // Global settings
     "app": {
-        // Print debug logging
-        "debug": true,
+        // Print the debug log to the terminal when Suplemon exits.
+        // The log is written to output.log next to this file either way.
+        "debug": false,
         // Debug log level (0: Notset, 10: Debug, 20: Info, 30: Warning, 40: Error, 50: Critical)
         "debug_level": 20,
         // How long curses will wait to detect ESC key

@@ -28,6 +28,10 @@ class BufferingTargetHandler(BufferingHandler):
         # Save target for later
         self._fd_target = fd_target
 
+        # Records printed to the target, so callers can tell whether the user
+        # was actually shown anything
+        self.flushed_records = 0
+
     def close(self):
         """Upon `close`, flush our internal info to the target"""
         # Flush our buffers to the target
@@ -40,6 +44,7 @@ class BufferingTargetHandler(BufferingHandler):
                     continue
                 msg = self.format(record)
                 print(msg, file=self._fd_target)
+                self.flushed_records += 1
         finally:
             self.release()
 
