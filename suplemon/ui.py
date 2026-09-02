@@ -302,14 +302,22 @@ class UI:
                 # Header bar don't ever need to move
                 self.header_win.resize(1, x)
 
+        # The status window doubles as the prompt surface, so it is created
+        # even when the bottom bar is hidden. Drawing the bar itself is guarded
+        # separately in refresh_status(), so this doesn't make a hidden bar
+        # appear. Without a window here, any prompt that positions its cursor
+        # crashes on a None window.
         if config["show_bottom_bar"]:
             offset_bottom += 1
-            if self.status_win is None:
-                self.status_win = curses.newwin(1, x, y - offset_bottom, 0)
-            else:
-                self.status_win.mvwin(y - offset_bottom, 0)
-                if self.status_win.getmaxyx()[1] != x:
-                    self.status_win.resize(1, x)
+            status_y = y - offset_bottom
+        else:
+            status_y = y - 1
+        if self.status_win is None:
+            self.status_win = curses.newwin(1, x, status_y, 0)
+        else:
+            self.status_win.mvwin(status_y, 0)
+            if self.status_win.getmaxyx()[1] != x:
+                self.status_win.resize(1, x)
 
         if config["show_legend"]:
             offset_bottom += 2
