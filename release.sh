@@ -10,18 +10,33 @@ if test "$version" = ""; then
   exit 1
 fi
 
-# Bump the version via regexp
-sed -E "s/^(__version__ = \")[0-9]+\.[0-9]+\.[0-9]+(\")$/\1$version\2/" suplemon/main.py --in-place
+# Bump the version. Done in Python rather than sed -i, whose syntax differs
+# between GNU and BSD and silently created backup files on macOS and FreeBSD.
+python3 - "$version" <<'PY'
+import re
+import sys
+
+version = sys.argv[1]
+path = "suplemon/main.py"
+with open(path, encoding="utf-8") as f:
+    data = f.read()
+new, count = re.subn(r'^__version__ = "[^"]*"$',
+                     '__version__ = "%s"' % version, data, count=1, flags=re.M)
+if count != 1:
+    sys.exit("Expected to find __version__ in %s but didn't" % path)
+with open(path, "w", encoding="utf-8") as f:
+    f.write(new)
+PY
 
 # Verify our version made it into the file
-if ! grep "$version" suplemon/main.py &> /dev/null; then
-  echo "Expected \`__version__\` to update via \`sed\` but it didn't" 1>&2
+if ! grep -q "__version__ = \"$version\"" suplemon/main.py; then
+  echo "Expected \`__version__\` to be updated but it wasn't" 1>&2
   exit 1
 fi
 
-# Commit the change
+# Commit the change. Only the version bump, not whatever else is in the tree.
 git add suplemon/main.py
-git commit -a -m "Release $version"
+git commit -m "Release $version"
 
 # Tag the release
 git tag "$version"
@@ -30,5 +45,9 @@ git tag "$version"
 git push
 git push --tags
 
-# Publish the release to PyPI
-python setup.py sdist --formats=gztar,zip upload
+# Build and publish to PyPI. `setup.py upload` was removed by PyPI in 2018;
+# builds go through `build` and uploads through `twine`.
+#   pip install build twine
+rm -rf dist
+python3 -m build
+python3 -m twine upload dist/*

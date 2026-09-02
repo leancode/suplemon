@@ -1,8 +1,7 @@
 Suplemon :lemon:
 ========
 
-[![Build Status](https://travis-ci.org/richrd/suplemon.svg?branch=master)](https://travis-ci.org/richrd/suplemon) [![Join the chat at https://webchat.freenode.net/?channels=%23suplemon](https://img.shields.io/badge/chat-on%20freenode%20%23suplemon-blue.svg)](https://webchat.freenode.net/?channels=%23suplemon)
-[![Run on Repl.it](https://repl.it/badge/github/richrd/suplemon)](https://repl.it/github/richrd/suplemon)
+[![test](https://github.com/leancode/suplemon/actions/workflows/test.yml/badge.svg)](https://github.com/leancode/suplemon/actions/workflows/test.yml)
 
           ___________   _________  ___     ______________________________   ___
          /  _____/  /  /  /  _   \/  /\   /  ______/        /  ___   /   | /  /\
@@ -39,27 +38,34 @@ http://github.com/richrd/suplemon
 
 
 ## Caveats
- * Currently no built in selections (regions). To copy part of a line select it with your mouse and use <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>
+ * No built in selections (regions). Copy and cut act on whole lines that have a cursor on them; see the "Selecting text" section of the built in help (<kbd>F1</kbd>). To copy part of a line, select it with your mouse and use your terminal's own copy shortcut, usually <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>
 
 ## Try it!
 
-You can just clone the repo, and try Suplemon, or also install it system wide.
-To run from source you need to install the python `wcwidth` package.
+You can clone the repo and run Suplemon from source, or install it. Running
+from source needs `wcwidth`; `pygments` is optional but gives you proper
+syntax highlighting instead of the simpler line based colouring.
 
-    pip3 install wcwidth
-    git clone https://github.com/richrd/suplemon.git
+    git clone https://github.com/leancode/suplemon.git
     cd suplemon
-    python3 suplemon.py
+    python3 -m venv venv
+    ./venv/bin/pip install wcwidth pygments
+    ./venv/bin/python suplemon.py
 
 ### Installation
 
-Install the latest version from PIP:
+The tidiest way is [pipx](https://pipx.pypa.io/), which puts Suplemon and its
+dependencies in their own environment and still gives you a `suplemon` command:
 
-    sudo pip3 install suplemon
+    pipx install suplemon
 
-To install Suplemon from the repo run the setup script:
+To install from a clone of the repo:
 
-    sudo python3 setup.py install
+    pipx install .
+
+Plain `pip install` works too, but install it into a virtual environment
+rather than system wide. Most current distributions ship a Python marked as
+externally managed (PEP 668) and will refuse `sudo pip install` outright.
 
 ### Usage
 
@@ -69,14 +75,12 @@ To install Suplemon from the repo run the setup script:
 
 
 ### Notes
- - **Must use Python 3.3 or higher for proper character encoding support.**
- - **Python2.7 (and maybe lower) versions work, but aren't officially supported (some special characters won't work etc).**
+ - **Python 3.8 or higher.** Python 2 is not supported.
  - *The master branch is considered stable.*
- - *Tested on Unix.*
+ - *Tested on Linux and FreeBSD.*
 
-Dev Branch Status: [![Build Status](https://travis-ci.org/richrd/suplemon.svg?branch=dev)](https://travis-ci.org/richrd/suplemon)
-
-No dependencies outside the Python Standard Library required.
+`wcwidth` is required. `pygments` is optional and recommended; see
+[docs/optional-dependencies.md](docs/optional-dependencies.md) for the rest.
 
 ### Optional dependencies
 
