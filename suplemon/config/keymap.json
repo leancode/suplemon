@@ -6,7 +6,7 @@
 
 [
     // App
-    {"keys": ["ctrl+h"],           "command": "help"},
+    {"keys": ["f1", "ctrl+h"],     "command": "help"},
     {"keys": ["ctrl+s"],           "command": "save_file"},
     {"keys": ["ctrl+e"],           "command": "run_command"},
     {"keys": ["ctrl+f"],           "command": "find"},
@@ -18,7 +18,7 @@
     {"keys": ["ctrl+p"],           "command": "comment"},
     {"keys": ["ctrl+pageup"],      "command": "next_file"},
     {"keys": ["ctrl+pagedown"],    "command": "prev_file"},
-    {"keys": ["f1"],               "command": "save_file_as"},
+    {"keys": ["f3"],               "command": "save_file_as"},
     {"keys": ["f2"],               "command": "reload_file"},
     {"keys": ["f7"],               "command": "toggle_whitespace"},
     {"keys": ["f8"],               "command": "toggle_mouse"},
