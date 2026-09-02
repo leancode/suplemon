@@ -50,7 +50,7 @@ class BaseViewer:
             "tmtheme": "xml",
             "ts": "js",
         }
-        self.show_line_ends = True
+        self.show_line_ends = False
 
         self.cursor_style = curses.A_UNDERLINE
 

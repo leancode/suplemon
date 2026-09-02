@@ -30,6 +30,10 @@ Most shortcuts are also shown at the bottom in the legend area. Here's
 the complete reference.
 
 
+ * F1 / Ctrl + H
+   > Show this help. On terminals where the backspace key sends ^H, Ctrl + H
+   > arrives as backspace and can't reach the help, so F1 always works.
+
  * Ctrl + Q
    > Exit
 
@@ -58,6 +62,10 @@ the complete reference.
  * Ctrl + D
    > Search for next occurance or find the word the cursor is on. Adds a new cursor at each new occurance.
 
+ * Ctrl + A
+   > Add a cursor at every occurance of the last search term. Search with
+   > Ctrl + F or Ctrl + D first, otherwise there is no term to look for.
+
  * Ctrl + T
    > Trim whitespace
 
@@ -66,6 +74,9 @@ the complete reference.
 
  * Ctrl + Left / Right
    > Jump to previous or next word or line
+
+ * Ctrl + Up / Down
+   > Jump three lines up or down
 
  * ESC
    > Revert to a single cursor / Cancel input prompt
@@ -76,14 +87,20 @@ the complete reference.
  * Alt + Page Down
    > Move line(s) down
 
+ * Tab / Shift + Tab
+   > Indent or unindent line(s)
+
  * Ctrl + S
    > Save current file
 
- * F1
+ * F3
    > Save file with new name
 
  * F2
    > Reload current file
+
+ * Ctrl + N
+   > New empty file
 
  * Ctrl + O
    > Open file
@@ -100,10 +117,10 @@ the complete reference.
  * Ctrl + E
    > Run a command.
 
- * F5
+ * F5 / Ctrl + Z
    > Undo
 
- * F6
+ * F6 / Ctrl + Y
    > Redo
 
  * F7
@@ -115,7 +132,15 @@ the complete reference.
  * F9
    > Toggle line numbers
 
+ * F10
+   > Toggle visible line endings. They start hidden; the character drawn is
+   > the "line_end_char" setting in your config.
+
  * F11
+   > Toggle syntax highlighting. Bound but not implemented yet, so pressing
+   > it currently does nothing.
+
+ * F12
    > Toggle full screen
 
 ### Mouse shortcuts
