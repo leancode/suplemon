@@ -586,7 +586,7 @@ class UI:
         result = self._query(text, initial, PromptFile)
         return result
 
-    def query_autocmp(self, text, initial="", completions=[]):
+    def query_autocmp(self, text, initial="", completions=None):
         """Get an arbitrary string from the user with autocomplete."""
         prompt_inst = PromptAutocmp(self.app, self.status_win, initial_items=completions)
         result = self._query(text, initial, inst=prompt_inst)

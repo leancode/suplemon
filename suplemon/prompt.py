@@ -172,7 +172,7 @@ class PromptFiltered(Prompt):
 class PromptAutocmp(Prompt):
     """An input prompt with basic autocompletion."""
 
-    def __init__(self, app, window, initial_items=[]):
+    def __init__(self, app, window, initial_items=None):
         Prompt.__init__(self, app, window)
         # Whether the autocomplete feature is active
         self.complete_active = False
@@ -181,7 +181,7 @@ class PromptAutocmp(Prompt):
         # Input data to use for autocompletion (stored when autocompletion is activated)
         self.complete_data = ""
         # Default autocompletable items
-        self.complete_items = initial_items
+        self.complete_items = [] if initial_items is None else initial_items
 
     def handle_input(self, event):
         """Handle special bindings for the prompt."""
