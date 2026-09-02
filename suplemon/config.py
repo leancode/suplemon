@@ -9,6 +9,23 @@ import logging
 
 from . import suplemon_module
 
+# Preamble written to the user config created on first run. The defaults file
+# has its own preamble saying it shouldn't be edited, which is the opposite of
+# what's wanted here, so it's replaced with this one.
+USER_CONFIG_HEADER = """\
+// Suplemon Config
+//
+// Created from Suplemon's defaults on first run, and safe to edit. Any
+// setting you change here overrides the default; anything you delete falls
+// back to it. Single line comments are supported, as seen here.
+//
+// There are three main groups for settings:
+// - app: Global settings
+// - editor: Editor behaviour
+// - display: How the UI looks
+
+"""
+
 
 class Config:
     def __init__(self, app):
@@ -46,7 +63,10 @@ class Config:
         config = False
         if not os.path.exists(path):
             self.logger.debug("Configuration file '{0}' doesn't exist.".format(path))
-        else:
+            # First run. Give the user a documented config they can actually
+            # edit rather than running on defaults they can't see.
+            self.create_user_config()
+        if os.path.exists(path):
             config = self.load_config_file(path)
         if config is not False:
             self.logger.debug("Loaded configuration file '{0}'".format(path))
@@ -103,8 +123,54 @@ class Config:
             return False
         return True
 
+    def default_config_path(self):
+        """Path of the default config file shipped with Suplemon."""
+        return os.path.join(self.app.path, "config", self.default_config_filename)
+
+    def create_user_config(self):
+        """Create the user config file by copying the defaults.
+
+        Run on first start so that the user gets a commented config file to
+        edit instead of silently running on built in defaults.
+
+        :return: True if the config file was created.
+        """
+        source = self.default_config_path()
+        target = self.path()
+        try:
+            with open(source) as f:
+                data = f.read()
+        except OSError:
+            self.logger.warning("Couldn't read default config '{0}'.".format(source))
+            return False
+        try:
+            with open(target, "w") as f:
+                f.write(self.build_user_config(data))
+        except OSError:
+            self.logger.warning("Couldn't create config file '{0}'.".format(target))
+            return False
+        self.logger.info("Created config file '{0}' from the defaults.".format(target))
+        return True
+
+    def build_user_config(self, data):
+        """Replace the default config's preamble with a user facing one.
+
+        Everything before the opening brace of the defaults is a comment block
+        stating the file shouldn't be edited. The settings themselves and the
+        comments documenting them are left untouched.
+
+        :param data: Contents of the default config file.
+        :return: Contents to write to the user config file.
+        """
+        lines = data.split("\n")
+        for i, line in enumerate(lines):
+            if line.lstrip().startswith("{"):
+                return USER_CONFIG_HEADER + "\n".join(lines[i:])
+        # Nothing that looks like a config body, copy it verbatim
+        return data
+
     def load_default_config(self):
-        path = os.path.join(self.app.path, "config", self.default_config_filename)
+        path = self.default_config_path()
         config = self.load_config_file(path)
         if not config:
             self.logger.error("Failed to load default config file '{0}'!".format(path))

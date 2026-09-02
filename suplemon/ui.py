@@ -242,7 +242,7 @@ class UI:
                 curses.init_pair(5, 171, bg)  # 5 Magenta
                 curses.init_pair(6, 81, bg)   # 6 Cyan
                 curses.init_pair(7, 15, bg)   # 7 White
-                curses.init_pair(8, 245, bg)  # 8 Gray (Line number color)
+                curses.init_pair(8, self.get_line_number_color(), bg)  # 8 Line number color
                 curses.init_pair(9, 8, bg)   # 8 Gray (Whitespace color)
             except:
                 self.logger.warning("Enhanced colors failed to load. You could try 'export TERM=xterm-256color'.")
@@ -252,6 +252,21 @@ class UI:
             self.app.config["editor"]["theme"] = "8colors"
 
         self.app.themes.use(self.app.config["editor"]["theme"])
+
+    def get_line_number_color(self, default=245):
+        """Get the configured color for the line numbers.
+
+        Falls back to the default if the setting is missing or isn't a color
+        this terminal can show, so that a bad value can't break the display.
+
+        :param default: Color to use when the setting can't be used.
+        :return: Terminal color index for the line numbers.
+        """
+        color = self.app.config["editor"].get("line_number_color", default)
+        if isinstance(color, bool) or not isinstance(color, int) or not 0 <= color < curses.COLORS:
+            self.logger.warning("Invalid line_number_color {0!r}, using {1}.".format(color, default))
+            return default
+        return color
 
     def setup_windows(self):
         """Initialize and layout windows."""
