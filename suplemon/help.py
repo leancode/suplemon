@@ -119,7 +119,14 @@ the complete reference.
  * F9
    > Toggle line numbers
 
+ * F10
+   > Toggle visible line endings
+
  * F11
+   > Toggle syntax highlighting. Bound but not implemented yet, so pressing
+   > it currently does nothing.
+
+ * F12
    > Toggle full screen
 
 ### Mouse shortcuts
