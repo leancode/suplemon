@@ -93,10 +93,6 @@ class App:
             return False
         self.config.load()
 
-        # Unicode symbols don't play nice with Python 2 so disable them
-        if sys.version_info[0] < 3:
-            self.config["app"]["use_unicode_symbols"] = False
-
         # Configure logger
         self.debug = self.config["app"]["debug"]
         debug_level = self.config["app"]["debug_level"]
@@ -160,12 +156,11 @@ class App:
         the 'app_loaded' event.
         """
         self.ui.load()
-        ver = sys.version_info
-        if ver[0] < 3 or (ver[0] == 3 and ver[1] < 3):
+        if sys.version_info < (3, 8):
             ver = ".".join(map(str, sys.version_info[0:2]))
             self.logger.warning("Running Suplemon with Python {version} "
-                                "isn't officialy supported. Please use "
-                                "Python 3.3 or higher."
+                                "isn't officially supported. Please use "
+                                "Python 3.8 or higher."
                                 .format(version=ver))
         self.load_files()
         self.running = True
@@ -565,10 +560,7 @@ class App:
 
     def query_command(self):
         """Run editor commands."""
-        if sys.version_info[0] < 3:
-            modules = self.modules.modules.iteritems()
-        else:
-            modules = self.modules.modules.items()
+        modules = self.modules.modules.items()
 
         # Get built in operations
         completions = [oper for oper in self.operations.keys()]

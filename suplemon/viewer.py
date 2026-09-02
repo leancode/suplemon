@@ -5,7 +5,6 @@ Text viewer component subclassed by Editor.
 
 import os
 import re
-import sys
 import curses
 import logging
 try:
@@ -476,9 +475,8 @@ class BaseViewer:
         if not no_wspace:
             line_data = self.replace_whitespace(line_data)
 
-        # Use unicode support on Python 3.3 and higher
-        if sys.version_info[0] == 3 and sys.version_info[1] > 2:
-            line_data = line_data.encode("utf-8")
+        # curses wants bytes here, and the terminal is driven in UTF-8
+        line_data = line_data.encode("utf-8")
         return line_data
 
     def _slice_line_for_rendering(self, line, max_len):

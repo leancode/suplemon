@@ -1,7 +1,6 @@
 """
 Basic logging to delay printing until curses is unloaded.
 """
-from __future__ import print_function
 import os
 import logging
 from logging.handlers import BufferingHandler, RotatingFileHandler
