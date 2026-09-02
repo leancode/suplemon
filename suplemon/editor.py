@@ -125,7 +125,10 @@ class Editor(Viewer):
             state.store(self)
         if len(self.history) > 1:
             if self.current_state < len(self.history)-1:
-                self.history = self.history[:self.current_state]
+                # Drop the redo branch, but keep the state being edited from.
+                # Slicing at current_state dropped that state too, so undoing
+                # after an undo followed by an edit skipped a step.
+                self.history = self.history[:self.current_state+1]
 
         self.history.append(state)
         self.current_state = len(self.history)-1
