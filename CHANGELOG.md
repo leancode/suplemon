@@ -2,6 +2,72 @@ Change Log
 ==========
 
 
+## v0.3.0 (unreleased) - leancode fork
+
+This fork picks up where the upstream repo stopped in 2020. Every change
+below is verified against Python 3.11 and 3.13.
+
+**Runs on current Python**
+
+- Replaced the `imp` module, removed in Python 3.12, with `importlib`.
+  Without this Suplemon would not start at all on 3.12 or later.
+- Stopped calling `curses.endwin()` twice, which made every clean exit end
+  in `_curses.error` on current ncurses.
+- Removed the Python 2 scaffolding, and the version guard that would have
+  silently stopped encoding output on a future Python 4.
+- Replaced all 54 bare excepts with the exceptions actually expected, so
+  KeyboardInterrupt and SystemExit are no longer swallowed.
+
+**Fixed**
+
+- Opening a large file took minutes. The autocomplete word list used a
+  linear membership test, making it quadratic in file size. A 7 MB file
+  went from over a minute to under a second. (upstream #274)
+- Any prompt crashed with `'NoneType' object has no attribute 'getmaxyx'`
+  when the bottom bar was hidden. (upstream #269)
+- Extensions with no matching Pygments lexer alias, notably `.h`, `.hpp`,
+  `.kt` and `.svh`, got no syntax highlighting. (upstream #263)
+- Key bindings deleted from the user keymap stayed active until restart.
+  (upstream #266)
+- Auto indent produced no indentation on tab indented files, and the
+  comment module converted tab indentation to spaces.
+- Undoing, editing, then undoing again skipped a step.
+- Files are read and written in the configured `default_encoding` instead
+  of whatever the locale happened to be.
+- `Config.store()` opened the file read only and wrote to the wrong path.
+- A bare `~` was treated as a filename rather than the home directory.
+
+**Changed**
+
+- Help moved to <kbd>F1</kbd>, save as to <kbd>F3</kbd>. <kbd>Ctrl</kbd> +
+  <kbd>H</kbd> still works where the terminal allows it, which excludes
+  every terminal whose backspace key sends `^H`, FreeBSD's included.
+- 256 colour support is detected by palette size rather than
+  `can_change_color()`, which had been dropping tmux, screen, konsole and
+  PuTTY down to 8 colours. (upstream #253)
+- The line number colour is configurable, and readable by default.
+- A config file is written on first run instead of only complaining that
+  none exists.
+- `debug` defaults to off, and when on, the log dump explains itself.
+- Line endings are hidden at startup with a visible default character, so
+  <kbd>F10</kbd> does something.
+- Clipboard support for Wayland, WSL, Termux and Windows. (upstream #272)
+- New `--log-level` option. (upstream #265)
+
+**Documentation**
+
+- The help documents how selection works, which keys exist, and the ones
+  that do nothing. (upstream #225, #264)
+- README and dependency docs describe reality: `wcwidth` is required,
+  Python 3.8 is the floor, and the install instructions work on a
+  PEP 668 distribution.
+
+**Tooling**
+
+- Travis replaced with GitHub Actions on current Python versions.
+- Packaging metadata filled in; `release.sh` uses `build` and `twine`.
+
+
 ## [v0.2.1](https://github.com/richrd/suplemon/tree/0.2.1) (2019-08-29) compared to previous master branch.
 [Full Changelog](https://github.com/richrd/suplemon/compare/0.2.0...0.2.1)
 
