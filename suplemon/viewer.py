@@ -977,8 +977,16 @@ class Viewer(BaseViewer):
             self.pygments_syntax = pygments.lexers.get_lexer_by_name(ext)
             self.logger.debug("Loaded Pygments lexer '{0}'.".format(ext))
         except Exception:
-            self.logger.debug("Failed to load Pygments lexer '{0}'.".format(ext))
-            return False
+            # get_lexer_by_name takes a lexer alias, not a file extension, and
+            # the two only coincide some of the time. Extensions like h, hpp,
+            # kt and svh have no alias of their own, so ask Pygments to match
+            # on the filename instead before giving up.
+            try:
+                self.pygments_syntax = pygments.lexers.get_lexer_for_filename("file.{0}".format(ext))
+                self.logger.debug("Loaded Pygments lexer for extension '{0}'.".format(ext))
+            except Exception:
+                self.logger.debug("Failed to load Pygments lexer '{0}'.".format(ext))
+                return False
         if ext == "php":
             # Hack to highlight PHP even without <?php ?> tags
             self.pygments_syntax.options.update({"startinline": 1})
