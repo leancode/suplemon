@@ -152,11 +152,14 @@ the complete reference.
  * Ctrl + W
    > Close file
 
- * Ctrl + Page Up
-   > Switch to next file
+ * F4 / Ctrl + Page Up / Ctrl + Alt + Page Up
+   > Switch to next file. Wraps around, so F4 alone cycles through them all.
 
- * Ctrl + Page Down
-   > Switch to previous file
+ * Shift + F4 / Ctrl + Page Down / Ctrl + Alt + Page Down
+   > Switch to previous file. Terminals often keep Ctrl + Page Up and Down
+   > for their own tabs, hence the alternatives. Shift + F4 and the
+   > Ctrl + Alt pair need a terminfo entry that describes those keys, which
+   > older ones (FreeBSD's among them) do not have; F4 works everywhere.
 
  * Ctrl + E
    > Run a command.
