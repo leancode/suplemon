@@ -118,9 +118,14 @@ That removes the launchers and `~/.local/src/suplemon`, and keeps
 ### Installing as a package
 
 The tidiest way is [pipx](https://pipx.pypa.io/), which puts Suplemon and its
-dependencies in their own environment and still gives you a `suplemon` command:
+dependencies in their own environment and gives you both a `suplemon` and an
+`se` command:
 
-    pipx install suplemon
+    pipx install suplemon-editor
+
+The distribution is called `suplemon-editor` because `suplemon` on PyPI is the
+original author's, and `se` there is an unrelated stream editor. The commands
+it installs are still `suplemon` and `se`.
 
 To install from a clone of the repo:
 
