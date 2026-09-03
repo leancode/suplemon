@@ -118,9 +118,14 @@ That removes the launchers and `~/.local/src/suplemon`, and keeps
 ### Installing as a package
 
 The tidiest way is [pipx](https://pipx.pypa.io/), which puts Suplemon and its
-dependencies in their own environment and still gives you a `suplemon` command:
+dependencies in their own environment and gives you both a `suplemon` and an
+`se` command:
 
-    pipx install suplemon
+    pipx install suplemon-editor
+
+The distribution is called `suplemon-editor` because `suplemon` on PyPI is the
+original author's, and `se` there is an unrelated stream editor. The commands
+it installs are still `suplemon` and `se`.
 
 To install from a clone of the repo:
 
@@ -425,6 +430,31 @@ If you are interested in contributing to Suplemon, development dependencies can 
 After those are installed, tests can be run via:
 
     ./test.sh
+
+### Releasing
+
+    ./release.sh 0.3.1              # bump, commit, tag, push
+    ./release.sh 0.3.1 --publish    # the same, then create the GitHub release
+
+Publishing to PyPI happens in
+[.github/workflows/publish.yml](.github/workflows/publish.yml), triggered by a
+published GitHub release rather than by the tag, so tagging and publishing stay
+separate decisions. It uses
+[PyPI Trusted Publishing](https://docs.pypi.org/trusted-publishers/), so no API
+token exists on any machine or in any repository secret.
+
+The trusted publisher on PyPI is configured as:
+
+| Field | Value |
+| --- | --- |
+| PyPI project name | `suplemon-editor` |
+| Owner | `leancode` |
+| Repository name | `suplemon` |
+| Workflow name | `publish.yml` |
+| Environment name | `pypi` |
+
+Both the workflow and `release.sh` refuse to publish if the distribution name
+is `suplemon`, which is the original author's package.
 
 PRs are very welcome and appreciated. **Target `master`.**
 
