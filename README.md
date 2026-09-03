@@ -65,6 +65,15 @@ It checks your platform and Python version, clones or updates the source in
 update. Read it first if you'd rather not pipe a script into a shell:
 [install.sh](install.sh).
 
+To remove it again:
+
+    curl -fsSL https://raw.githubusercontent.com/leancode/suplemon/master/uninstall.sh | sh
+
+That removes the launchers and `~/.local/src/suplemon`, and keeps
+`~/.local/bin` and your config. Add `--purge` to remove the config too, or
+`--dry-run` to see what it would do first. With the pipe those go after
+`sh -s --`, for example `... | sh -s -- --dry-run`.
+
 ### Installing as a package
 
 The tidiest way is [pipx](https://pipx.pypa.io/), which puts Suplemon and its
