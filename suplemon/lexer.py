@@ -15,6 +15,9 @@ class Lexer:
             pygments.token.Generic.Strong:             "string",
             pygments.token.Generic.Subheading:         "string",
             pygments.token.Generic.Deleted:            "invalid",
+            pygments.token.Generic.Heading:            "entity.name",
+            pygments.token.Generic.Emph:               "italic",
+            pygments.token.Generic.Inserted:           "string",
             pygments.token.Punctuation:                "punctuation",
             pygments.token.Operator:                   "keyword",
             pygments.token.Operator.Word:              "keyword.control",
@@ -56,6 +59,26 @@ class Lexer:
             pygments.token.Error:                      "invalid",
         }
 
+    def scope_for_token(self, token):
+        """Return the theme scope for a pygments token.
+
+        Pygments tokens are hierarchical: Token.Literal.String.Single is a
+        child of Token.Literal.String. Mapping only exact matches left every
+        subtype the map doesn't name unstyled, which is why single quoted
+        Python strings, C preprocessor lines and all leading whitespace came
+        out unhighlighted. Walk up to the nearest mapped ancestor, which is
+        how pygments' own formatters resolve a style.
+
+        :param token: Pygments token type.
+        :return: Theme scope name, or "global" if nothing matches.
+        """
+        while token is not None:
+            if token in self.token_map:
+                return self.token_map[token]
+            token = token.parent
+        self.logger.debug("No token_map entry for '{0}'.".format(token))
+        return "global"
+
     def lex(self, code, lex):
         """Return tokenified code.
 
@@ -79,10 +102,7 @@ class Lexer:
             token = word[0]
             scope = "global"
 
-            if token in self.token_map.keys():
-                scope = self.token_map[token]
-            else:
-                self.logger.warning("Token '{0}' for word '{1}' not found in token_map.".format(token, word[1]))
+            scope = self.scope_for_token(token)
 
             scopes.append((scope, word[1]))
         return scopes
