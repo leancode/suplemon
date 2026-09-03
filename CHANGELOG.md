@@ -2,6 +2,29 @@ Change Log
 ==========
 
 
+## Unreleased
+
+Repository and `curl | sh` installs only; the PyPI package is unaffected.
+
+**Added**
+
+- `install.sh` offers a command to link the launchers into
+  `/usr/local/bin`, which is on sudo's `secure_path` where
+  `~/.local/bin` is not. It prints the command rather than running it,
+  since nothing else in the installer needs a password, and it skips the
+  offer if something that is not ours already holds either name.
+- `uninstall.sh` reports those links and gives the command to remove
+  them. It never touches them itself.
+- Both scripts honour `SYS_BIN_DIR` for non-standard prefixes.
+
+**Documentation**
+
+- The README describes the `/usr/local/bin` option alongside the
+  full-path and `sudoedit` approaches.
+- Corrected the account of when upstream stopped: the last substantive
+  change to `master` was 11 December 2019, not January 2021, which was
+  two README image URL edits.
+
 ## [v0.3.3](https://github.com/leancode/suplemon/tree/0.3.3) (2026-09-03)
 
 **Fixed**

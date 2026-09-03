@@ -26,10 +26,11 @@ https://github.com/leancode/suplemon
 This is an actively maintained fork of [richrd/suplemon](https://github.com/richrd/suplemon).
 
 The original is a genuinely good editor and none of the design here is ours.
-Upstream simply stopped: the last commit to `master` landed in January 2021,
-the `dev` branch in June 2020, and 25 issues and 5 pull requests are still
-open, some since 2016. Suplemon had also stopped running altogether on
-Python 3.12 and newer, which is what prompted the fork.
+Upstream simply stopped. The last change of any substance to `master` was on
+11 December 2019; the only two commits since were README image URL edits in
+January 2021. The `dev` branch last moved in June 2020. 25 issues and 5 pull
+requests are still open, some since 2016. Suplemon had also stopped running
+altogether on Python 3.12 and newer, which is what prompted the fork.
 
 Since then this fork has:
 
@@ -155,13 +156,31 @@ That works because the launcher hard-codes an absolute path to the source
 tree. `$HOME` is root's under sudo, so a launcher written in terms of
 `$HOME` would look for the interpreter in the wrong place.
 
-If you do this often, either add `~/.local/bin` to `secure_path` in
-`visudo`, or use `sudoedit`, which copies the file to a temporary location,
+If you do this often, link the launcher somewhere sudo already looks.
+`/usr/local/bin` is on `secure_path` on every system I know of, so this makes
+`sudo suplemon` work by name:
+
+    sudo ln -sf ~/.local/bin/suplemon /usr/local/bin/suplemon && sudo ln -sf ~/.local/bin/suplemon /usr/local/bin/se
+
+`install.sh` prints this command for you, and skips it if something that is
+not ours already sits at either name — a stream editor called `se` exists, and
+silently replacing it would be rude.
+
+Links rather than copies, so re-running `install.sh` keeps them current; a
+copy would quietly go stale. The launcher holds an absolute path to your own
+source tree, so these run your checkout whoever invokes them: fine on a
+single-user machine, probably not on a shared one. `uninstall.sh` will not
+remove them, since it only touches `~/.local`, but it does tell you they are
+there.
+
+The alternative is `sudoedit`, which copies the file to a temporary location,
 opens it as you rather than as root, and copies it back:
 
     SUDO_EDITOR=~/.local/bin/suplemon sudoedit /etc/hosts
 
-`sudoedit` is the safer of the two: the editor never runs as root.
+`sudoedit` is the safest of the three: the editor never runs as root at all,
+so nothing it loads — modules, your config, a theme — is running with
+privileges.
 
 
 ### Notes

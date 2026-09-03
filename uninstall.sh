@@ -15,6 +15,8 @@ set -eu
 
 SRC_DIR="$HOME/.local/src/suplemon"
 BIN_DIR="$HOME/.local/bin"
+# Where the optional sudo-visible links live. Overridable for testing.
+SYS_BIN_DIR="${SYS_BIN_DIR:-/usr/local/bin}"
 LAUNCHER="$BIN_DIR/suplemon"
 SHORTCUT="$BIN_DIR/se"
 CONFIG_DIR="$HOME/.config/suplemon"
@@ -155,6 +157,22 @@ main() {
     ####################################################################
     step "Left in place on purpose"
     info "$BIN_DIR, because other programs live there"
+    # The README suggests linking the launchers into /usr/local/bin so sudo
+    # can find them. Those are root-owned and outside $HOME, and this script
+    # never asks for a password, so they are reported and left alone. Only
+    # ours are named: anything else at those paths is someone else's.
+    found=""
+    for f in "$SYS_BIN_DIR/suplemon" "$SYS_BIN_DIR/se"; do
+        if [ -L "$f" ] && [ "$(readlink "$f" 2>/dev/null)" = "$LAUNCHER" ]; then
+            found="$found $f"
+        elif [ -f "$f" ] && grep -q 'SUPLEMON_HOME' "$f" 2>/dev/null; then
+            found="$found $f"
+        fi
+    done
+    if [ -n "$found" ]; then
+        info "These, which need root to remove. Nothing here touches them:"
+        printf '        %ssudo rm -f%s%s\n' "$B" "$found" "$N"
+    fi
     for f in "$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.profile"; do
         if [ -f "$f" ] && grep -q 'Added by the Suplemon installer' "$f" 2>/dev/null; then
             info "The PATH block in $f, since $BIN_DIR stays"
