@@ -2,7 +2,7 @@ Change Log
 ==========
 
 
-## Unreleased
+## [v0.3.3](https://github.com/leancode/suplemon/tree/0.3.3) (2026-09-03)
 
 **Fixed**
 
