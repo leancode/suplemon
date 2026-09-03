@@ -2,6 +2,22 @@ Change Log
 ==========
 
 
+## Unreleased
+
+**Fixed**
+
+- Syntax highlighting only coloured tokens the theme map named exactly.
+  Pygments token types are hierarchical, so every subtype the map didn't
+  list fell through to the default colour: single quoted Python strings,
+  C and C++ preprocessor lines and type keywords, and the leading
+  whitespace on every line in every language. The scope lookup now walks
+  up to the nearest mapped ancestor, the way pygments' own formatters
+  resolve a style. Across a sample of JSON, Markdown, C, C++, CSS and
+  Python files this took the unstyled token count from 46 to 0.
+  (upstream #258, #268)
+- Added theme scopes for Markdown headings, emphasis and inserted text,
+  which have no mapped ancestor to fall back to.
+
 ## [v0.3.0](https://github.com/leancode/suplemon/tree/0.3.0) (2026-09-03) - leancode fork
 
 This fork picks up where the upstream repo stopped on 11 December 2019.
