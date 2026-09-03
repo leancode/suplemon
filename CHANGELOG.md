@@ -2,7 +2,7 @@ Change Log
 ==========
 
 
-## v0.3.0 (unreleased) - leancode fork
+## [v0.3.0](https://github.com/leancode/suplemon/tree/0.3.0) (2026-09-03) - leancode fork
 
 This fork picks up where the upstream repo stopped in 2020. Every change
 below is verified against Python 3.11 and 3.13.

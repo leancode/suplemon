@@ -39,9 +39,18 @@ if ! grep -q "__version__ = \"$version\"" suplemon/main.py; then
   exit 1
 fi
 
-# Commit the change. Only the version bump, not whatever else is in the tree.
+# Commit the version bump and the changelog entry, and nothing else in the
+# tree. Re-releasing the version already in main.py leaves nothing staged, so
+# only commit when there is something to commit.
 git add suplemon/main.py
-git commit -m "Release $version"
+if test -f CHANGELOG.md; then
+  git add CHANGELOG.md
+fi
+if git diff --cached --quiet; then
+  echo "Nothing to commit; $version is already the committed version."
+else
+  git commit -m "Release $version"
+fi
 
 # Tag the release
 git tag "$version"
