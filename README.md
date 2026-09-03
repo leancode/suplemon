@@ -54,6 +54,19 @@ syntax highlighting instead of the simpler line based colouring.
 
 ### Installation
 
+One line, no sudo, everything under `~/.local`:
+
+    curl -fsSL https://raw.githubusercontent.com/leancode/suplemon/master/install.sh | sh
+
+It checks your platform and Python version, clones or updates the source in
+`~/.local/src/suplemon`, builds a virtualenv, writes a launcher to
+`~/.local/bin/suplemon`, adds an `se` shortcut if that name is free, and puts
+`~/.local/bin` on your `PATH` if it isn't already. Re-run it any time to
+update. Read it first if you'd rather not pipe a script into a shell:
+[install.sh](install.sh).
+
+### Installing as a package
+
 The tidiest way is [pipx](https://pipx.pypa.io/), which puts Suplemon and its
 dependencies in their own environment and still gives you a `suplemon` command:
 
