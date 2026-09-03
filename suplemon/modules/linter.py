@@ -14,7 +14,7 @@ class Linter(Module):
     def init(self):
         self.init_logging(__name__)
 
-        # TODO: Run linting in a seperate thread to avoid
+        # TODO: Run linting in a separate thread to avoid
         # blocking the UI when the app is loading
 
         # Lint all files after app is loaded

@@ -66,7 +66,7 @@ class Storage:
         self.data = data
 
     def set_automatic(self, auto):
-        """Set wether the data should be stored automatically when changed."""
+        """Set whether the data should be stored automatically when changed."""
         self.automatic = auto
 
     def store(self):

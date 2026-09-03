@@ -380,7 +380,7 @@ class BaseViewer:
         #    because it can get sliced. Sliced lines won't always get
         #    completely highlighted (partial words). Syntax highlighting
         #    should be done first and then only render visible words.
-        # 2) Additionaly highlighing should be done for all lines at once
+        # 2) Additionally highlighting should be done for all lines at once
         #    and tokens should be cached in line instances. That way we can
         #    support multi line comment syntax etc. It should also perform
         #    better, since we only need to re-highlight lines when they change.
@@ -400,7 +400,7 @@ class BaseViewer:
                     bg = int(settings.get("background") or -1)
                     curses.init_pair(pair, fg, bg)
                 curs_color = curses.color_pair(pair)
-                # Only add tab indicators to the inital whitespace
+                # Only add tab indicators to the initial whitespace
                 if first_token and self.config["show_tab_indicators"]:
                     text = self.add_tab_indicators(text)
                 self.window.addstr(y, x_offset, text, curs_color)
@@ -520,14 +520,14 @@ class BaseViewer:
     ###########################################################################
 
     def scroll_up(self):
-        """Scroll view up if neccesary."""
+        """Scroll view up if necessary."""
         cursor = self.get_first_cursor()
         if cursor.y - self.y_scroll < 0:
             # Scroll up
             self.y_scroll = cursor.y
 
     def scroll_down(self):
-        """Scroll view up if neccesary."""
+        """Scroll view up if necessary."""
         cursor = self.get_last_cursor()
         size = self.get_size()
         if cursor.y - self.y_scroll >= size[1]:
@@ -839,7 +839,7 @@ class BaseViewer:
                 # On the current line begin from the last cursor x pos
                 x_offset = last_cursor.x
 
-            # Find all occurances of search string
+            # Find all occurrences of search string
             s = str(line[x_offset:])  # Data to search in
             if y < len(self.lines)-1:  # Make line breaks findable (add them to all except last line)
                 s = s + "\n"
@@ -873,7 +873,7 @@ class BaseViewer:
             return False
         else:
             # If we only have one cursor, and it's not
-            # where the first occurance is, just remove it
+            # where the first occurrence is, just remove it
             if len(self.cursors) == 1 and self.cursors[0].tuple() != new_cursors[0].tuple():
                 self.cursors = []
         self.last_find = what   # Only store string if it's really found
@@ -888,7 +888,7 @@ class BaseViewer:
         self.store_action_state("find")  # Store undo point
 
     def find_next(self):
-        """Find next occurance."""
+        """Find next occurrence."""
         what = self.last_find
         if what == "":
             cursor = self.get_cursor()
@@ -907,7 +907,7 @@ class BaseViewer:
         self.find(what)
 
     def find_all(self):
-        """Find all occurances."""
+        """Find all occurrences."""
         self.find(self.last_find, True)
 
 

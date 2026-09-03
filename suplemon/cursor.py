@@ -115,7 +115,7 @@ class Cursor:
         return False
 
     def __ne__(self, item):
-        """Check cursor for unequality."""
+        """Check cursor for inequality."""
         if isinstance(item, Cursor):
             if item.x != self.x or item.y != self.x:
                 return False
