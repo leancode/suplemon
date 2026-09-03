@@ -100,10 +100,6 @@ key_map = {
     "^Y": "ctrl+y",
     "^Z": "ctrl+z",  # Conflicts with suspend
 
-    544: "ctrl+left",
-    559: "ctrl+right",
-    565: "ctrl+up",
-    524: "ctrl+down",
     "kLFT5": "ctrl+left",
     "kRIT5": "ctrl+right",
     "kUP5": "ctrl+up",
@@ -114,10 +110,8 @@ key_map = {
     "kHOM5": "ctrl+home",
     "kEND5": "ctrl+end",
 
-    554: "ctrl+pageup",
-    549: "ctrl+pagedown",
-    "kNXT5": "ctrl+pageup",
-    "kPRV5": "ctrl+pagedown",
+    "kPRV5": "ctrl+pageup",
+    "kNXT5": "ctrl+pagedown",
 
     "O5P": "ctrl+f1",
     "O5Q": "ctrl+f2",
@@ -134,10 +128,6 @@ key_map = {
     "KEY_F(36)": "ctrl+f12",
 
     # Alt
-    563: "alt+up",
-    522: "alt+down",
-    542: "alt+left",
-    557: "alt+right",
     "kUP3": "alt+up",
     "kDN3": "alt+down",
     "kLFT3": "alt+left",
@@ -148,8 +138,6 @@ key_map = {
     "kHOM3": "alt+home",
     "kEND3": "alt+end",
 
-    552: "alt+pageup",
-    547: "alt+pagedown",
     "kPRV3": "alt+pageup",
     "kNXT3": "alt+pagedown",
 
@@ -184,6 +172,13 @@ key_map = {
     "O2Q": "shift+f2",
     "O2R": "shift+f3",
     "O2S": "shift+f4",
+
+    # Terminals that describe shifted function keys as kf13-kf24 report these
+    # instead. shift+f5 upwards were already covered; f1-f4 were not.
+    "KEY_F(13)": "shift+f1",
+    "KEY_F(14)": "shift+f2",
+    "KEY_F(15)": "shift+f3",
+    "KEY_F(16)": "shift+f4",
 
     "KEY_F(17)": "shift+f5",
     "KEY_F(18)": "shift+f6",
