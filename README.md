@@ -142,6 +142,28 @@ externally managed (PEP 668) and will refuse `sudo pip install` outright.
     suplemon [filename:row:col]... # Open one or more files at a specific row or column (optional)
 
 
+### Editing a root-owned file
+
+`sudo suplemon /etc/hosts` will say `command not found`. That is sudo, not
+Suplemon: sudo replaces `$PATH` with its own `secure_path`, which never
+includes `~/.local/bin`, so it cannot see the launcher. Give it the full
+path instead:
+
+    sudo ~/.local/bin/suplemon /etc/hosts
+
+That works because the launcher hard-codes an absolute path to the source
+tree. `$HOME` is root's under sudo, so a launcher written in terms of
+`$HOME` would look for the interpreter in the wrong place.
+
+If you do this often, either add `~/.local/bin` to `secure_path` in
+`visudo`, or use `sudoedit`, which copies the file to a temporary location,
+opens it as you rather than as root, and copies it back:
+
+    SUDO_EDITOR=~/.local/bin/suplemon sudoedit /etc/hosts
+
+`sudoedit` is the safer of the two: the editor never runs as root.
+
+
 ### Notes
  - **Python 3.8 or higher.** Python 2 is not supported.
  - *The master branch is considered stable.*

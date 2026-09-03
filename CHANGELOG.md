@@ -2,6 +2,27 @@ Change Log
 ==========
 
 
+## Unreleased
+
+Affects the repository and `curl | sh` installs only. The PyPI package
+generates its own launchers and was never affected, so this carries no
+version bump; `install.sh` is fetched from master and takes effect as
+soon as it is merged.
+
+**Fixed**
+
+- The generated launcher resolved its source tree through `$HOME` at run
+  time, so under `sudo` or `su` it looked for the virtualenv in root's
+  home and failed. `install.sh` now expands the path when it writes the
+  file.
+
+**Documentation**
+
+- `sudo suplemon` reports `command not found` because sudo replaces
+  `PATH` with `secure_path`, which does not include `~/.local/bin`. The
+  README explains this, gives the full-path invocation, and recommends
+  `sudoedit` so the editor never runs as root.
+
 ## [v0.3.1](https://github.com/leancode/suplemon/tree/0.3.1) (2026-09-03)
 
 **Fixed**
