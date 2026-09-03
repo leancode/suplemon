@@ -19,7 +19,7 @@ from .logger import logger
 from .config import Config
 from .editor import Editor
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 
 # ncurses only defines BUTTON5 when built with NCURSES_MOUSE_VERSION 2.
