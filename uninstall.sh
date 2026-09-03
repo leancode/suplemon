@@ -66,6 +66,21 @@ main() {
     info "Removes the launchers and $SRC_DIR."
     info "$BIN_DIR itself is left alone."
 
+    # Step out of the directory we are about to delete. Removing the shell's
+    # own working directory leaves the now empty directory pinned until the
+    # process exits, so it looks as though the removal failed. Every path here
+    # is absolute, so the working directory does not matter otherwise.
+    here=$(pwd -P 2>/dev/null || pwd)
+    case "$here" in
+        "$SRC_DIR"|"$SRC_DIR"/*)
+            if cd "$HOME" 2>/dev/null || cd / 2>/dev/null; then
+                info "Stepped out of $SRC_DIR into $(pwd), so it can be removed cleanly."
+            else
+                warn "Could not leave $SRC_DIR; an empty directory may be left behind."
+            fi
+            ;;
+    esac
+
     ####################################################################
     step "Removing the 'se' shortcut"
     if [ -L "$SHORTCUT" ]; then
