@@ -494,3 +494,25 @@ have a too steep learning curve. For them (like for me) nano was the weapon of
 choice. But nano feels clunky and it has its limitations. That's why
 I wrote my own editor with built in multi cursor support to fix the situation.
 Another reason is that developing Suplemon is simply fun to do.
+
+### Why this fork exists
+
+*— leancode*
+
+I had a shared FreeBSD account with nano on it and nothing else. I normally
+use [ne](https://ne.di.unimi.it/), but there was no binary I could install
+without a compiler or a package manager, and a shared account gives you
+neither. What it did have was Python 3.
+
+That turns out to be the interesting thing about Suplemon. Most of the good
+terminal editors — kakoune, helix, micro — ship as compiled binaries, so on
+a locked down box you are back to whatever the host chose to install for
+you. Anywhere Python 3 runs, `pip install suplemon-editor` gets you a real
+editor with multiple cursors, and that covers a lot of machines where you
+are not allowed to build anything.
+
+I liked it enough to keep it working. It had stopped running on Python 3.12
+when `imp` was removed, and the upstream repository had been quiet since
+2019, so this fork picks it up rather than switching to something else.
+Needing a feature and being able to write it, or hitting a bug and being
+able to fix it that afternoon, is the rest of the appeal.
