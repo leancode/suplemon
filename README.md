@@ -16,10 +16,51 @@ Suplemon :lemon:
 
 Suplemon is a modern, powerful and intuitive console text editor with multi cursor support.
 Suplemon replicates Sublime Text style functionality in the terminal with the ease of use of Nano.
-http://github.com/richrd/suplemon
+https://github.com/leancode/suplemon
 
 
 ![Suplemon in action](https://i.imgur.com/pdKvKsN.gif)
+
+## About this fork
+
+This is an actively maintained fork of [richrd/suplemon](https://github.com/richrd/suplemon).
+
+The original is a genuinely good editor and none of the design here is ours.
+Upstream simply stopped: the last commit to `master` landed in January 2021,
+the `dev` branch in June 2020, and 25 issues and 5 pull requests are still
+open, some since 2016. Suplemon had also stopped running altogether on
+Python 3.12 and newer, which is what prompted the fork.
+
+Since then this fork has:
+
+ * restored it on current Python, including 3.13
+ * fixed the upstream bugs that were reported but never merged, among them
+   large files taking minutes to open, a crash in every prompt when the
+   bottom bar was hidden, and missing syntax highlighting for several file
+   extensions
+ * adopted the useful parts of the unmerged upstream pull requests, including
+   the maintainer's own unreleased v0.2.9 work
+ * fixed things nobody had reported, such as auto indent losing tab
+   indentation, and modified keys like <kbd>Alt</kbd> + <kbd>Left</kbd>
+   silently doing the wrong thing
+ * added an installer, CI on current Python versions, and rather more
+   documentation
+
+See the [CHANGELOG](CHANGELOG.md) for the details.
+
+### Credit
+
+Suplemon was written by **Richard Lewis** ([richrd](https://github.com/richrd))
+and its contributors, and is MIT licensed. The editor, its multi cursor model
+and its interface are all their work. Thank you for building something worth
+keeping alive.
+
+Thanks also to the people whose unmerged pull requests were adopted here:
+[bagage](https://github.com/bagage) and
+[joshcangit](https://github.com/joshcangit).
+
+If upstream ever picks development back up, the changes here are deliberately
+kept in small, self contained commits so they can be offered back.
 
 ## Features
  * Proper multi cursor editing, as in Sublime Text
