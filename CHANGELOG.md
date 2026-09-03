@@ -2,7 +2,7 @@ Change Log
 ==========
 
 
-## Unreleased
+## [v0.3.1](https://github.com/leancode/suplemon/tree/0.3.1) (2026-09-03)
 
 **Fixed**
 
@@ -17,6 +17,13 @@ Change Log
   (upstream #258, #268)
 - Added theme scopes for Markdown headings, emphasis and inserted text,
   which have no mapped ancestor to fall back to.
+- Every misspelling reported upstream in #270, in comments, docstrings
+  and the README. The patch offered in that issue was never opened.
+
+**Changed**
+
+- `uninstall.sh` steps out of the checkout before removing it, so it
+  cannot fail while deleting its own working directory.
 
 ## [v0.3.0](https://github.com/leancode/suplemon/tree/0.3.0) (2026-09-03) - leancode fork
 
