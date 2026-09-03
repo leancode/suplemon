@@ -11,6 +11,8 @@ set -eu
 REPO_URL="https://github.com/leancode/suplemon.git"
 SRC_DIR="$HOME/.local/src/suplemon"
 BIN_DIR="$HOME/.local/bin"
+# Where sudo can see it. Overridable for testing and odd prefixes.
+SYS_BIN_DIR="${SYS_BIN_DIR:-/usr/local/bin}"
 LAUNCHER="$BIN_DIR/suplemon"
 SHORTCUT="$BIN_DIR/se"
 PY_MIN="3.8"
@@ -220,6 +222,36 @@ LAUNCHER_EOF
     info "Run it with:  suplemon [file]"
     [ -L "$SHORTCUT" ] && info "          or:  se [file]"
     info "Press F1 inside the editor for help, Ctrl+Q to quit."
+
+    # Optional, and deliberately not done for you: this script installs
+    # entirely inside $HOME and never asks for a password. sudo replaces
+    # PATH with secure_path, which excludes ~/.local/bin but includes
+    # /usr/local/bin, so a copy there is what makes "sudo suplemon" work
+    # by name rather than by full path.
+    # Symlinks rather than copies, so they keep tracking the launcher when
+    # this script is re-run. Never suggest clobbering an "se" that is not
+    # ours: a stream editor of that name exists and could be installed.
+    usrlocal_ok=1
+    for f in "$SYS_BIN_DIR/suplemon" "$SYS_BIN_DIR/se"; do
+        if [ -e "$f" ] || [ -L "$f" ]; then
+            if ! grep -q 'SUPLEMON_HOME' "$f" 2>/dev/null &&
+               [ "$(readlink "$f" 2>/dev/null)" != "$LAUNCHER" ]; then
+                warn "$f exists and is not ours; leaving it alone"
+                usrlocal_ok=0
+            fi
+        fi
+    done
+    if [ "$usrlocal_ok" = "1" ] && { [ ! -e "$SYS_BIN_DIR/suplemon" ] || [ ! -e "$SYS_BIN_DIR/se" ]; }; then
+        printf '\n%sOptional.%s sudo replaces PATH with its own secure_path, which\n' "$B" "$N"
+        info "excludes $BIN_DIR. To use it with sudo, link the launcher"
+        info "into $SYS_BIN_DIR. This is the only step that needs a password:"
+        printf '\n        %ssudo ln -sf %s %s/suplemon && sudo ln -sf %s %s/se%s\n' \
+            "$B" "$LAUNCHER" "$SYS_BIN_DIR" "$LAUNCHER" "$SYS_BIN_DIR" "$N"
+        info "Links, not copies, so re-running this script keeps them current."
+        info "They run your source tree, so keep them to machines you alone use."
+    elif [ "$usrlocal_ok" = "1" ]; then
+        ok "Linked into $SYS_BIN_DIR, so sudo can find it"
+    fi
 
     # Anything the user still has to do goes last, so it is the final thing
     # on screen rather than something scrolled away by later output. This
