@@ -431,6 +431,31 @@ After those are installed, tests can be run via:
 
     ./test.sh
 
+### Releasing
+
+    ./release.sh 0.3.1              # bump, commit, tag, push
+    ./release.sh 0.3.1 --publish    # the same, then create the GitHub release
+
+Publishing to PyPI happens in
+[.github/workflows/publish.yml](.github/workflows/publish.yml), triggered by a
+published GitHub release rather than by the tag, so tagging and publishing stay
+separate decisions. It uses
+[PyPI Trusted Publishing](https://docs.pypi.org/trusted-publishers/), so no API
+token exists on any machine or in any repository secret.
+
+The trusted publisher on PyPI is configured as:
+
+| Field | Value |
+| --- | --- |
+| PyPI project name | `suplemon-editor` |
+| Owner | `leancode` |
+| Repository name | `suplemon` |
+| Workflow name | `publish.yml` |
+| Environment name | `pypi` |
+
+Both the workflow and `release.sh` refuse to publish if the distribution name
+is `suplemon`, which is the original author's package.
+
 PRs are very welcome and appreciated. **Target `master`.**
 
 The original project asked for PRs against `dev`, because releases were cut
