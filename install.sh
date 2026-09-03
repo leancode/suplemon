@@ -132,7 +132,12 @@ main() {
 #!/bin/sh
 # Run suplemon from the git checkout using its own venv, from any directory.
 # Installed by install.sh. Re-run that script to update.
-SUPLEMON_HOME="\$HOME/.local/src/suplemon"
+#
+# The path below is absolute on purpose. It is expanded when install.sh
+# writes this file, not when the launcher runs, because \$HOME is not the
+# invoking user's home under sudo or su: it becomes root's, and the
+# launcher would look for the venv in the wrong place and fail.
+SUPLEMON_HOME="$SRC_DIR"
 exec "\$SUPLEMON_HOME/venv/bin/python" "\$SUPLEMON_HOME/suplemon.py" "\$@"
 LAUNCHER_EOF
     chmod +x "$LAUNCHER"
