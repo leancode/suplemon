@@ -91,9 +91,18 @@ if ! command -v gh >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "Creating the GitHub release for $version."
+# Name the repository explicitly. In a fork with an upstream remote, gh picks
+# a default repository of its own and guessed the upstream one, which failed
+# with "tag exists locally but has not been pushed to <upstream>".
+repo_slug=$(git remote get-url origin | sed -E 's#^git@[^:]+:##; s#^https?://[^/]+/##; s#\.git$##')
+if test -z "$repo_slug"; then
+  echo "Could not work out the GitHub repository from the origin remote." 1>&2
+  exit 1
+fi
+
+echo "Creating the GitHub release for $version on $repo_slug."
 echo "That triggers .github/workflows/publish.yml, which uploads '$dist_name'."
-gh release create "$version" --title "$version" --generate-notes
+gh release create "$version" --repo "$repo_slug" --title "$version" --generate-notes
 
 echo
 echo "Release created. Watch the upload with:  gh run watch"
