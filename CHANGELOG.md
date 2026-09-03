@@ -2,12 +2,11 @@ Change Log
 ==========
 
 
-## Unreleased
+## [v0.3.2](https://github.com/leancode/suplemon/tree/0.3.2) (2026-09-03)
 
-Affects the repository and `curl | sh` installs only. The PyPI package
-generates its own launchers and was never affected, so this carries no
-version bump; `install.sh` is fetched from master and takes effect as
-soon as it is merged.
+Nothing here changes the installed package. The launcher fix affects the
+repository and `curl | sh` installs only, and reached those the moment it
+landed on master. The version exists so the two are not left out of step.
 
 **Fixed**
 
