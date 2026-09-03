@@ -57,7 +57,7 @@ class Lexer:
         }
 
     def lex(self, code, lex):
-        """Return tokenified code.
+        """Return tokenized code.
 
         Return a list of tuples (scope, word) where word is the word to be
         printed and scope the scope name representing the context.

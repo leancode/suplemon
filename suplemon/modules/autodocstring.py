@@ -70,7 +70,7 @@ class AutoDocstring(Module):
     def get_docstring_indent(self, line_data):
         """Get indent amount for docstring.
 
-        Gets the indentation of the function definiton line, and
+        Gets the indentation of the function definition line, and
         adds +1 to account for the function body.
 
         :param line_data: The line of the function definition.
@@ -124,7 +124,7 @@ class AutoDocstring(Module):
 
         :param editor: Editor instance to get lines from.
         :param line_number: Line number of the function definition.
-        :return: Boolean indicating wether the function something.
+        :return: Boolean indicating whether the function something.
         """
         for i in range(line_number+1, len(editor.lines)):
             line = editor.get_line(i)

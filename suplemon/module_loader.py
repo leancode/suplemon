@@ -80,7 +80,7 @@ class ModuleLoader:
         names = sorted(self.get_module_names())
         for name in names:
             name, module = self.load_single(name)
-            # Skip modules that can't be run expicitly
+            # Skip modules that can't be run explicitly
             if module["class"].run.__module__ == "suplemon.suplemon_module":
                 continue
             # Skip undocumented modules

@@ -32,7 +32,7 @@ def get_error_info():
 
 
 def get_string_between(start, stop, s):
-    """Search string for a substring between two delimeters. False if not found."""
+    """Search string for a substring between two delimiters. False if not found."""
     i1 = s.find(start)
     if i1 == -1:
         return False

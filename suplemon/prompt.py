@@ -147,7 +147,7 @@ class PromptFiltered(Prompt):
 
     def handle_input(self, event):
         """Handle special bindings for the prompt."""
-        # The cancel and accept keys are kept for concistency
+        # The cancel and accept keys are kept for consistency
         if event.key_name in ["ctrl+c", "escape"]:
             self.on_cancel()
             return False
@@ -304,7 +304,7 @@ class PromptFile(PromptAutocmp):
                 # This might happen if the cwd has been
                 # removed after starting suplemon.
                 return []
-        # In case we don't have sufficent permissions
+        # In case we don't have sufficient permissions
         try:
             contents = os.listdir(path)
         except OSError:

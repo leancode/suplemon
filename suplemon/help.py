@@ -41,11 +41,11 @@ putting more cursors down.
    > three lines.
 
  * Ctrl + D
-   > Add a cursor at the next occurance of the word the cursor is on.
+   > Add a cursor at the next occurrence of the word the cursor is on.
    > Press it repeatedly to gather up matches one at a time.
 
  * Ctrl + A
-   > Add a cursor at every occurance of the last search term at once.
+   > Add a cursor at every occurrence of the last search term at once.
    > Search with Ctrl + F or Ctrl + D first to set the term.
 
  * ESC
@@ -104,10 +104,10 @@ the complete reference.
    > Search for a string or regular expression (configurable)
 
  * Ctrl + D
-   > Search for next occurance or find the word the cursor is on. Adds a new cursor at each new occurance.
+   > Search for next occurrence or find the word the cursor is on. Adds a new cursor at each new occurrence.
 
  * Ctrl + A
-   > Add a cursor at every occurance of the last search term. Search with
+   > Add a cursor at every occurrence of the last search term. Search with
    > Ctrl + F or Ctrl + D first, otherwise there is no term to look for.
 
  * Ctrl + T
