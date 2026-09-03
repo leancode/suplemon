@@ -30,6 +30,8 @@ main() {
     warn()  { printf '    %s!%s %s\n' "$Y" "$N" "$*"; }
     die()   { printf '\n%sError:%s %s\n\n' "$R" "$N" "$*" >&2; exit 1; }
 
+    needs_export=0
+
     printf '%s\n' "${B}Suplemon installer${N}"
     info "Installs to $SRC_DIR and $BIN_DIR. No sudo, nothing outside \$HOME."
 
@@ -172,9 +174,8 @@ LAUNCHER_EOF
                 fi
             done
             if [ -n "$configured" ]; then
-                ok "Already configured in $configured"
-                info "It is not active in this shell yet. Open a new terminal,"
-                info "or run:  export PATH=\"\$HOME/.local/bin:\$PATH\""
+                ok "Already configured in $configured, but not active in this shell"
+                needs_export=1
             else
                 shell_name=$(basename "${SHELL:-/bin/sh}")
                 case "$shell_name" in
@@ -185,8 +186,7 @@ LAUNCHER_EOF
                 esac
                 if [ -z "$profile" ]; then
                     warn "Your shell is fish, which uses different syntax."
-                    info "Run this once:"
-                    info "    fish_add_path \$HOME/.local/bin"
+                    needs_export=2
                 else
                     [ -f "$profile" ] && cp "$profile" "$profile.bak" && \
                         info "Backed up $profile to $profile.bak"
@@ -197,8 +197,7 @@ LAUNCHER_EOF
                         printf 'fi\n'
                     } >> "$profile"
                     ok "Added $BIN_DIR to your PATH in $profile"
-                    info "It applies to new terminals. For this one, run:"
-                    info "    export PATH=\"\$HOME/.local/bin:\$PATH\""
+                    needs_export=1
                 fi
             fi
             ;;
@@ -216,6 +215,23 @@ LAUNCHER_EOF
     info "Run it with:  suplemon [file]"
     [ -L "$SHORTCUT" ] && info "          or:  se [file]"
     info "Press F1 inside the editor for help, Ctrl+Q to quit."
+
+    # Anything the user still has to do goes last, so it is the final thing
+    # on screen rather than something scrolled away by later output. This
+    # script cannot set PATH for you: it runs in its own process, and a
+    # child process cannot change its parent shell's environment.
+    if [ "$needs_export" = "1" ]; then
+        printf '\n%s%sOne more step.%s %s is not on this shell'"'"'s PATH yet.\n' \
+            "$Y" "$B" "$N" "$BIN_DIR"
+        info "New terminals will pick it up automatically. For this one, run:"
+        printf '\n        %sexport PATH="$HOME/.local/bin:$PATH"%s\n' "$B" "$N"
+        info "Or start it by full path right now:  $LAUNCHER"
+    elif [ "$needs_export" = "2" ]; then
+        printf '\n%s%sOne more step.%s Your shell is fish. Run this once:\n' \
+            "$Y" "$B" "$N"
+        printf '\n        %sfish_add_path $HOME/.local/bin%s\n' "$B" "$N"
+        info "Or start it by full path right now:  $LAUNCHER"
+    fi
     printf '\n'
 }
 
