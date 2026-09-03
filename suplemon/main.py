@@ -6,6 +6,7 @@ The main class that starts and runs Suplemon.
 
 
 import os
+import curses
 import sys
 
 from . import ui
@@ -19,6 +20,12 @@ from .config import Config
 from .editor import Editor
 
 __version__ = "0.3.2"
+
+
+# ncurses only defines BUTTON5 when built with NCURSES_MOUSE_VERSION 2.
+# Without it there is no wheel-down event to match, so scrolling down is
+# simply unavailable rather than mismatched.
+BUTTON5_PRESSED = getattr(curses, "BUTTON5_PRESSED", 0)
 
 
 class App:
@@ -340,13 +347,18 @@ class App:
         :rtype: boolean
         """
         editor = self.get_editor()
-        if event.mouse_code == 1:                    # Left mouse button release
+        code = event.mouse_code
+        # These were hardcoded integers matching NCURSES_MOUSE_VERSION 1,
+        # which gave each button six bits. Version 2 packs them into five to
+        # make room for button 5, so every value except BUTTON1_RELEASED
+        # moved and only left click still worked. Ask curses instead.
+        if code & curses.BUTTON1_RELEASED:
             editor.set_single_cursor(event.mouse_pos)
-        elif event.mouse_code == 4096:               # Right mouse button release
+        elif code & curses.BUTTON3_RELEASED:
             editor.add_cursor(event.mouse_pos)
-        elif event.mouse_code == 524288:             # Wheel up
+        elif code & curses.BUTTON4_PRESSED:          # Wheel up
             editor.jump_up()
-        elif event.mouse_code == 134217728:          # Wheel down(and unfortunately left button drag)
+        elif BUTTON5_PRESSED and code & BUTTON5_PRESSED:
             editor.jump_down()
         else:
             return False

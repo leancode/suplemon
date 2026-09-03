@@ -2,6 +2,17 @@ Change Log
 ==========
 
 
+## Unreleased
+
+**Fixed**
+
+- Mouse mode only responded to left click. The button codes were
+  hardcoded integers from `NCURSES_MOUSE_VERSION` 1, which gave each
+  button six bits; version 2 packs them into five to make room for
+  button 5, moving every value except `BUTTON1_RELEASED`. Right click
+  and both scroll directions were therefore matched against numbers
+  ncurses never sends. The codes now come from curses itself.
+
 ## [v0.3.2](https://github.com/leancode/suplemon/tree/0.3.2) (2026-09-03)
 
 Nothing here changes the installed package. The launcher fix affects the
