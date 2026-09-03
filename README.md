@@ -407,9 +407,12 @@ The available commands and their descriptions are:
 
 ## Support
 
-If you experience problems, please submit a new issue.
-If you have a question, need help, or just want to chat head over to the IRC channel #suplemon @ Freenode.
-I'll be happy to chat with you, see you there!
+If you experience problems, please
+[open an issue](https://github.com/leancode/suplemon/issues) on this fork.
+
+The original project pointed people at #suplemon on Freenode. Freenode
+effectively ended in 2021 and that channel is gone, so GitHub issues are the
+place now.
 
 
 ## Development
@@ -423,8 +426,13 @@ After those are installed, tests can be run via:
 
     ./test.sh
 
-PRs are very welcome and appreciated.
-When making PRs make sure to set the target branch to `dev`. I only push to master when releasing new versions.
+PRs are very welcome and appreciated. **Target `master`.**
+
+The original project asked for PRs against `dev`, because releases were cut
+from `master`. That no longer applies: upstream's `dev` last moved in June
+2020 and is behind this fork by everything listed at the top of this file.
+This fork develops on `master` directly, with each change on its own short
+lived branch, so `master` is always the current state.
 
 
 ## Rationale
