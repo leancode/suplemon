@@ -55,15 +55,18 @@ class SystemClipboard(Module):
             }
         if os.environ.get("WAYLAND_DISPLAY") and shutil.which("wl-copy"):
             return {"get": ["wl-paste", "-n"], "set": ["wl-copy"]}
-        if shutil.which("xsel"):
-            return {"get": ["xsel", "-b"], "set": ["xsel", "-i", "-b"]}
+        # xsel and xclip are X11 clients. Being installed isn't enough: with no
+        # DISPLAY they exit with "Can't open display" on every copy and paste.
+        if os.environ.get("DISPLAY"):
+            if shutil.which("xsel"):
+                return {"get": ["xsel", "-b"], "set": ["xsel", "-i", "-b"]}
+            if shutil.which("xclip"):
+                return {
+                    "get": ["xclip", "-selection", "clipboard", "-out"],
+                    "set": ["xclip", "-selection", "clipboard", "-in"],
+                }
         if shutil.which("pbcopy"):
             return {"get": ["pbpaste", "-Prefer", "txt"], "set": ["pbcopy"]}
-        if shutil.which("xclip"):
-            return {
-                "get": ["xclip", "-selection", "clipboard", "-out"],
-                "set": ["xclip", "-selection", "clipboard", "-in"],
-            }
         if shutil.which("termux-clipboard-get"):
             return {"get": ["termux-clipboard-get"], "set": ["termux-clipboard-set"]}
         return False
@@ -83,13 +86,29 @@ class SystemClipboard(Module):
 
     def get_clipboard(self):
         try:
-            return subprocess.check_output(self.clipboard["get"], universal_newlines=True)
+            # stderr is discarded on purpose. curses owns the screen, so
+            # anything a clipboard tool prints lands on top of the editor and
+            # corrupts the display.
+            return subprocess.check_output(
+                self.clipboard["get"],
+                stderr=subprocess.DEVNULL,
+                universal_newlines=True,
+            )
         except (OSError, subprocess.CalledProcessError):
             return False
 
     def set_clipboard(self, data):
         try:
-            p = subprocess.Popen(self.clipboard["set"], stdin=subprocess.PIPE)
+            # Both streams go to /dev/null rather than being inherited, for
+            # the same reason as in get_clipboard. Not PIPE: xsel forks a
+            # background process to own the selection, which keeps a piped
+            # stdout open, and communicate() would wait for it forever.
+            p = subprocess.Popen(
+                self.clipboard["set"],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
             out, err = p.communicate(input=bytes(data, "utf-8"))
             return out
         except (OSError, subprocess.CalledProcessError):
