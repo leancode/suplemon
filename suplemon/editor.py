@@ -119,11 +119,15 @@ class Editor(Viewer):
         if self.last_action != action:
             self.last_action = action
             self.store_state(state)
-        else:
-            # FIXME: This if is here just for safety.
-            # FIXME: current_state might be wrong ;.<
-            if self.current_state < len(self.history)-1:
-                self.history[self.current_state].store(self)
+        elif self.current_state > 0:
+            # Same action continuing, so fold it into the state this run
+            # already created rather than making a new one. The guard used
+            # to be current_state < len(history)-1, which is never true
+            # while editing forwards: store_state leaves current_state at
+            # the end of the history. So a run was only ever recorded as
+            # its first keystroke, and the next different action left an
+            # undo point holding one character of what the user had typed.
+            self.history[self.current_state].store(self)
 
     def store_state(self, state=None, action=None):
         """Store the current editor state for undo/redo."""
