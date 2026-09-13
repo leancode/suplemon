@@ -25,6 +25,19 @@ Repository and `curl | sh` installs only; the PyPI package is unaffected.
   change to `master` was 11 December 2019, not January 2021, which was
   two README image URL edits.
 
+## Unreleased
+
+**Fixed**
+
+- Pasting indented text produced a staircase, each line indented further
+  than the last. A paste arrives as ordinary keystrokes, so auto indent
+  fired on every newline and prepended the previous line's whitespace to
+  a line that already carried its own, compounding down the block.
+  Suplemon now turns on the terminal's bracketed paste mode, which wraps
+  a paste in markers so it can be told apart from typing, and inserts it
+  literally: no auto indent, and tabs stay tabs instead of being
+  expanded. Terminals without bracketed paste behave as before.
+
 ## [v0.3.3](https://github.com/leancode/suplemon/tree/0.3.3) (2026-09-03)
 
 **Fixed**

@@ -4,6 +4,7 @@ Curses user interface.
 """
 
 import os
+import sys
 import logging
 from wcwidth import wcswidth
 
@@ -15,6 +16,13 @@ from .key_mappings import key_map
 curses = None
 
 
+# What the terminal wraps a paste in when bracketed paste mode is on.
+# curses has no terminfo entry for these, so they arrive as plain
+# characters and have to be recognised here.
+PASTE_START = "\x1b[200~"
+PASTE_END = "\x1b[201~"
+
+
 class InputEvent:
     """Represents a keyboard or mouse event."""
     def __init__(self):
@@ -24,6 +32,7 @@ class InputEvent:
         self.is_typeable = False
         self.curses_key_name = None
         self.mouse_code = None
+        self.data = None  # Pasted text, for events of type 'paste'
         self.mouse_pos = (0, 0)
         self.logger = logging.getLogger("{0}.InputEvent".format(__name__))
 
@@ -38,6 +47,12 @@ class InputEvent:
         """Manually set the event key name."""
         self.type = "key"
         self.key_name = name
+
+    def set_paste_data(self, data):
+        """Turn this into a paste event carrying the pasted text."""
+        self.type = "paste"
+        self.data = data
+        return self
 
     def parse_mouse_state(self, state):
         """Parse curses mouse events."""
@@ -166,15 +181,35 @@ class UI:
 
         self.current_yx = self.screen.getmaxyx()  # For checking resize
         self.setup_mouse()
+        self.setup_bracketed_paste(True)
         self.setup_windows()
+
+    def setup_bracketed_paste(self, enable):
+        """Turn the terminal's bracketed paste mode on or off.
+
+        With it on, a paste arrives wrapped in ESC[200~ and ESC[201~ so it
+        can be told apart from typing. Terminals that don't support it
+        ignore the sequence and nothing changes.
+
+        :param bool enable: True to turn it on, False to turn it off.
+        """
+        try:
+            sys.stdout.write("\033[?2004h" if enable else "\033[?2004l")
+            sys.stdout.flush()
+        except (OSError, ValueError):
+            # Not fatal: without it, pastes are simply indistinguishable
+            # from typing, which is how it behaved before.
+            self.logger.debug("Could not set bracketed paste mode.")
 
     def unload(self):
         """Unload curses."""
+        # Leave the terminal as we found it. Without this the shell keeps
+        # receiving paste markers after suplemon exits.
+        self.setup_bracketed_paste(False)
         # Don't call curses.endwin() here. self.run() drives the app via
         # curses.wrapper(), which always calls endwin() itself when it
         # returns. Ending the screen twice makes modern ncurses return ERR,
         # which Python raises as _curses.error on exit.
-        pass
 
     def setup_mouse(self):
         # Mouse support
@@ -623,10 +658,72 @@ class UI:
                 if state:
                     event.parse_mouse_state(state)
                     return event
+            elif char == "\x1b" and self.match_sequence(PASTE_START[1:]):
+                return event.set_paste_data(self.read_paste())
             else:
                 event.parse_key_code(char)
                 return event
         return False
+
+    def match_sequence(self, rest):
+        """Check whether the characters after ESC are `rest`.
+
+        Reads without blocking and pushes back anything that does not
+        match, so an ESC that starts something else, or a lone ESC key
+        press, is handed on untouched.
+
+        :param str rest: Expected characters following the escape.
+        :return: True if they were consumed, False if pushed back.
+        :rtype: boolean
+        """
+        seen = ""
+        self.screen.nodelay(1)
+        try:
+            for expected in rest:
+                try:
+                    c = self.screen.get_wch()
+                except (curses.error, KeyboardInterrupt):
+                    c = None
+                if c != expected:
+                    if c is not None:
+                        seen += str(c)
+                    for ch in reversed(seen):
+                        try:
+                            curses.unget_wch(ch)
+                        except (curses.error, TypeError):
+                            pass
+                    return False
+                seen += str(c)
+        finally:
+            self.screen.nodelay(0)
+        return True
+
+    def read_paste(self):
+        """Read a paste up to the closing marker and return its text.
+
+        :return: The pasted text, without the markers.
+        :rtype: str
+        """
+        data = []
+        while True:
+            try:
+                c = self.screen.get_wch()
+            except KeyboardInterrupt:
+                break
+            except curses.error:
+                break
+            if c == "\x1b":
+                if self.match_sequence(PASTE_END[1:]):
+                    break
+                # An ESC inside the payload is content, not a marker.
+                data.append(c)
+                continue
+            if isinstance(c, int):
+                # A translated key code cannot appear in pasted text;
+                # ignore rather than corrupt the payload with a number.
+                continue
+            data.append(c)
+        return "".join(data)
 
     def is_mouse(self, key):
         """Check for mouse events"""

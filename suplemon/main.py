@@ -314,7 +314,21 @@ class App:
             return self.handle_key(event)
         elif event.type == "mouse":
             return self.handle_mouse(event)
+        elif event.type == "paste":
+            return self.handle_paste(event)
         return False
+
+    def handle_paste(self, event):
+        """Insert text the terminal reported as a paste.
+
+        :param event: Event instance carrying the text in .data.
+        :return: Boolean indicating if the event was handled.
+        :rtype: boolean
+        """
+        if not event.data:
+            return False
+        self.get_editor().insert_text(event.data)
+        return True
 
     def handle_key(self, event):
         """Handle a key input event.

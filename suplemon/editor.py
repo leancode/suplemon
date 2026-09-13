@@ -56,6 +56,9 @@ class Editor(Viewer):
         self.current_state = 0
         # Last editor action that was used (for undo/redo)
         self.last_action = None
+        # True while a bracketed paste is being inserted. Auto indent
+        # and per-keystroke undo states are both wrong during one.
+        self.pasting = False
 
     def init(self):
         Viewer.init(self)
@@ -109,6 +112,10 @@ class Editor(Viewer):
 
     def store_action_state(self, action, state=None):
         """Store the editor state if a new action is taken."""
+        if self.pasting:
+            # The whole paste is one action. Its state was stored before
+            # insertion began, so undo puts back what was there before.
+            return
         if self.last_action != action:
             self.last_action = action
             self.store_state(state)
@@ -364,7 +371,7 @@ class Editor(Viewer):
             # Leave the beginning of the line
             self.lines[cursor.y].set_data(start)
             wspace = ""
-            if self.config["auto_indent_newline"]:
+            if self.config["auto_indent_newline"] and not self.pasting:
                 wspace = helpers.leading_whitespace(self.lines[cursor.y])
             self.lines.insert(cursor.y+1, Line(wspace+end))
             self.move_y_cursors(cursor.y, 1)
@@ -530,6 +537,32 @@ class Editor(Viewer):
         self.move_cursors()
         # Add a restore point if previous action != type
         self.store_action_state("type")
+
+    def insert_text(self, text):
+        """Insert pasted text literally, without auto indent.
+
+        A paste arrives as ordinary keystrokes, so auto indent fires on
+        every newline and prepends the previous line's whitespace to a line
+        that already carries its own. Over a block of text that compounds
+        line by line into a staircase. The terminal tells us where a paste
+        starts and ends, so suppress it for the duration.
+
+        :param str text: Text to insert at the cursor(s).
+        """
+        text = text.replace("\r\n", "\n").replace("\r", "\n")
+        self.pasting = True
+        try:
+            for i, line in enumerate(text.split("\n")):
+                if i:
+                    self.enter()
+                if line:
+                    self.type(line)
+        finally:
+            self.pasting = False
+        # Stored once, after the insertion, the same way type() and enter()
+        # do it. The flag kept the per-keystroke stores from piling up, so
+        # one undo steps over the whole paste rather than part of it.
+        self.store_action_state("paste")
 
     def type_at_cursor(self, cursor, data):
         """Insert data at specified cursor."""
