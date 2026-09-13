@@ -2,9 +2,24 @@ Change Log
 ==========
 
 
-## Unreleased
+## [v0.3.4](https://github.com/leancode/suplemon/tree/0.3.4) (2026-09-13)
 
-Repository and `curl | sh` installs only; the PyPI package is unaffected.
+**Fixed**
+
+- Undo stepped back too far after a run of typing. A run was only ever
+  recorded as its first keystroke, so the undo point left behind held one
+  character of what had been typed: entering `KEEP`, pressing enter and
+  undoing once left `K`. The guard that was meant to keep the state in
+  sync while an action continued tested `current_state < len(history)-1`,
+  which is never true while editing forwards.
+- Pasting indented text produced a staircase, each line indented further
+  than the last. A paste arrives as ordinary keystrokes, so auto indent
+  fired on every newline and prepended the previous line's whitespace to
+  a line that already carried its own, compounding down the block.
+  Suplemon now turns on the terminal's bracketed paste mode, which wraps
+  a paste in markers so it can be told apart from typing, and inserts it
+  literally: no auto indent, and tabs stay tabs instead of being
+  expanded. Terminals without bracketed paste behave as before.
 
 **Added**
 
@@ -25,24 +40,8 @@ Repository and `curl | sh` installs only; the PyPI package is unaffected.
   change to `master` was 11 December 2019, not January 2021, which was
   two README image URL edits.
 
-## Unreleased
-
-**Fixed**
-
-- Undo stepped back too far after a run of typing. A run was only ever
-  recorded as its first keystroke, so the undo point left behind held one
-  character of what had been typed: entering `KEEP`, pressing enter and
-  undoing once left `K`. The guard that was meant to keep the state in
-  sync while an action continued tested `current_state < len(history)-1`,
-  which is never true while editing forwards.
-- Pasting indented text produced a staircase, each line indented further
-  than the last. A paste arrives as ordinary keystrokes, so auto indent
-  fired on every newline and prepended the previous line's whitespace to
-  a line that already carried its own, compounding down the block.
-  Suplemon now turns on the terminal's bracketed paste mode, which wraps
-  a paste in markers so it can be told apart from typing, and inserts it
-  literally: no auto indent, and tabs stay tabs instead of being
-  expanded. Terminals without bracketed paste behave as before.
+The installer and uninstaller changes affect repository and
+`curl | sh` installs only; they reached those when they were merged.
 
 ## [v0.3.3](https://github.com/leancode/suplemon/tree/0.3.3) (2026-09-03)
 
